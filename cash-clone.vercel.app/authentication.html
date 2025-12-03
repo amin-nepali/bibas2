@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<!-- Mirrored from cash-clone.vercel.app/authentication.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 03 Dec 2025 03:12:52 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <!-- The Gatekeeper logic is inside the main script, so no changes needed here -->
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Authentication</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <style>
+      @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      /* All your existing perfect CSS is here... UNCHANGED */
+      :root {
+        --cash-green: #00d54b;
+        --black: #000000;
+        --grey-text: #6c6c6c;
+        --light-grey-bg: #f0f0f0;
+        --light-grey-border: #e8e8e8;
+        --white: #ffffff;
+        --error-red: #ff453a;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--light-grey-bg);
+        color: var(--black);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .auth-container {
+        width: 100%;
+        max-width: 480px;
+        height: 100%;
+        background-color: var(--white);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+      @media (min-width: 500px) {
+        body {
+          align-items: center;
+        }
+        .auth-container {
+          height: auto;
+          max-height: 700px;
+          min-height: 600px;
+          border-radius: 20px;
+          box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+        }
+      }
+      .auth-header h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .auth-header p {
+        font-size: 0.95rem;
+        color: var(--grey-text);
+      }
+      .auth-header p a {
+        color: var(--cash-green);
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .auth-form {
+        margin-top: 32px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .input-group {
+        margin-bottom: 24px;
+      }
+      .input-group label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 8px;
+      }
+      .input-wrapper {
+        position: relative;
+      }
+      .input-field {
+        width: 100%;
+        background-color: var(--light-grey-bg);
+        border: 1px solid var(--light-grey-border);
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 1rem;
+        font-family: "Inter", sans-serif;
+        transition: border-color 0.2s, background-color 0.2s;
+      }
+      .input-field:focus {
+        outline: none;
+        border-color: var(--grey-text);
+      }
+      .input-field[disabled] {
+        background-color: #f0f0f0;
+        color: var(--grey-text);
+        cursor: not-allowed;
+      }
+      .visibility-toggle {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--grey-text);
+        cursor: pointer;
+        font-size: 1.1rem;
+      }
+      .action-button {
+        width: 100%;
+        background-color: var(--cash-green);
+        color: var(--white);
+        border: none;
+        border-radius: 12px;
+        padding: 18px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .action-button:active {
+        transform: scale(0.98);
+      }
+      .action-button:disabled {
+        background-color: #e8e8e8;
+        color: #aaa;
+        cursor: not-allowed;
+      }
+      .legal-text {
+        font-size: 0.75rem;
+        color: var(--grey-text);
+        text-align: center;
+        margin-top: 20px;
+        line-height: 1.5;
+      }
+      .legal-text a {
+        color: var(--black);
+        font-weight: 500;
+        text-decoration: none;
+      }
+      .error-message {
+        color: var(--error-red);
+        font-weight: 500;
+        text-align: center;
+        margin-top: 20px;
+        min-height: 1.2em;
+      }
+      .account-switch-prompt {
+        text-align: center;
+        margin-bottom: 24px;
+        color: var(--grey-text);
+        font-size: 0.95rem;
+      }
+      .account-switch-prompt a {
+        color: var(--cash-green);
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--white);
+        animation: spin 1s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <header class="auth-header">
+        <h1 id="form-title">Log in</h1>
+        <p id="form-subtitle">
+          Enter your email. New to this app?
+          <a id="mode-toggle">Create account</a>
+        </p>
+      </header>
+      <form id="auth-form" class="auth-form" novalidate>
+        <div>
+          <div class="account-switch-prompt hidden" id="account-switch-prompt">
+            Welcome back.
+            <a id="switch-account-link">Use a different account</a>
+          </div>
+          <div class="input-group" id="email-group">
+            <label for="email-input">Email</label>
+            <input
+              type="email"
+              id="email-input"
+              class="input-field"
+              placeholder="your@email.com"
+              autocomplete="email"
+            />
+          </div>
+          <div class="input-group" id="password-group">
+            <label for="password-input">Password</label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="password-input"
+                class="input-field"
+                autocomplete="current-password"
+              />
+              <span id="visibility-toggle" class="visibility-toggle"
+                ><i class="fa-regular fa-eye-slash"></i
+              ></span>
+            </div>
+          </div>
+          <p id="error-message" class="error-message"></p>
+        </div>
+        <footer class="auth-footer">
+          <button type="submit" id="action-button" class="action-button">
+            <span id="button-text">Continue</span>
+            <div id="spinner" class="spinner hidden"></div>
+          </button>
+          <p class="legal-text">
+            By clicking Continue, you agree to the <a href="#">Terms</a>,
+            <a href="#">E-Sign Consent</a>, & <a href="#">Privacy Policy</a>.
+          </p>
+        </footer>
+      </form>
+    </div>
+
+    <script type="module">
+      // --- The Final, Bulletproof Authentication Logic ---
+
+      // =======================================================
+      // == THE GATEKEEPER SCRIPT ==
+      // =======================================================
+      // This runs immediately to check if a logged-in user is trying to access this page.
+      // If already logged in, redirect to home.
+      (() => {
+        const currentUserEmail = localStorage.getItem("lastAppUser");
+        if (currentUserEmail) {
+          // User is already authenticated, send them to home
+          window.location.replace("home.html");
+        }
+      })();
+      // =======================================================
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDhQn9-OGTgoGNwhHYEHgSop82tVX4dlNg",
+        authDomain: "cashapp-subscription-1.firebaseapp.com",
+        projectId: "cashapp-subscription-1",
+        storageBucket: "cashapp-subscription-1.appspot.com",
+        messagingSenderId: "906438851392",
+        appId: "1:906438851392:web:ff6105036be32e4ddd58a5",
+        measurementId: "G-TPNY2228ZM",
+      };
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // --- The rest of the script is unchanged and works perfectly ---
+      const elements = {
+        form: document.getElementById("auth-form"),
+        title: document.getElementById("form-title"),
+        subtitle: document.getElementById("form-subtitle"),
+        emailGroup: document.getElementById("email-group"),
+        emailInput: document.getElementById("email-input"),
+        passwordInput: document.getElementById("password-input"),
+        actionButton: document.getElementById("action-button"),
+        buttonText: document.getElementById("button-text"),
+        spinner: document.getElementById("spinner"),
+        errorMessage: document.getElementById("error-message"),
+        visibilityToggle: document.getElementById("visibility-toggle"),
+        accountSwitchPrompt: document.getElementById("account-switch-prompt"),
+        switchAccountLink: document.getElementById("switch-account-link"),
+      };
+      let isLoginMode = true;
+      const render = () => {
+        elements.errorMessage.textContent = "";
+        if (isLoginMode) {
+          elements.title.textContent = "Log in";
+          elements.subtitle.innerHTML =
+            'New to this app? <a id="mode-toggle">Create account</a>';
+          elements.buttonText.textContent = "Continue";
+        } else {
+          elements.title.textContent = "Create account";
+          elements.subtitle.innerHTML =
+            'Already have an account? <a id="mode-toggle">Log in</a>';
+          elements.buttonText.textContent = "Create Account";
+        }
+        document
+          .getElementById("mode-toggle")
+          .addEventListener("click", toggleMode);
+      };
+      const toggleMode = (e) => {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        render();
+      };
+      const handleAuth = async (e) => {
+        e.preventDefault();
+        const email = elements.emailInput.value.trim();
+        const password = elements.passwordInput.value;
+        elements.errorMessage.textContent = "";
+        elements.actionButton.disabled = true;
+        elements.buttonText.classList.add("hidden");
+        elements.spinner.classList.remove("hidden");
+        try {
+          if (isLoginMode) {
+            await signInWithEmailAndPassword(auth, email, password);
+          } else {
+            await createUserWithEmailAndPassword(auth, email, password);
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 2);
+            const trialData = {
+              status: "TRIAL",
+              endDate: trialEndDate.toISOString(),
+            };
+            localStorage.setItem(`sub_${email}`, JSON.stringify(trialData));
+          }
+          localStorage.setItem("lastAppUser", email);
+          window.location.href = "pay.html";
+        } catch (error) {
+          elements.actionButton.disabled = false;
+          elements.buttonText.classList.remove("hidden");
+          elements.spinner.classList.add("hidden");
+          let message = "An unknown error occurred. Please try again.";
+          switch (error.code) {
+            case "auth/user-not-found":
+              message = "No account found with this email.";
+              break;
+            case "auth/wrong-password":
+              message = "Incorrect password. Please try again.";
+              break;
+            case "auth/email-already-in-use":
+              message = "This email is already in use.";
+              break;
+            case "auth/weak-password":
+              message = "Password should be at least 6 characters.";
+              break;
+            case "auth/invalid-email":
+              message = "Please enter a valid email address.";
+              break;
+          }
+          elements.errorMessage.textContent = message;
+        }
+      };
+      const toggleVisibility = () => {
+        const isPassword = elements.passwordInput.type === "password";
+        elements.passwordInput.type = isPassword ? "text" : "password";
+        elements.visibilityToggle.innerHTML = isPassword
+          ? '<i class="fa-regular fa-eye"></i>'
+          : '<i class="fa-regular fa-eye-slash"></i>';
+      };
+      const switchToNewAccount = () => {
+        localStorage.removeItem("lastAppUser");
+        location.reload();
+      };
+      document.addEventListener("DOMContentLoaded", () => {
+        const rememberedUser = localStorage.getItem("lastAppUser");
+        if (rememberedUser) {
+          isLoginMode = true;
+          elements.emailInput.value = rememberedUser;
+          elements.emailInput.disabled = true;
+          elements.emailGroup.classList.add("hidden");
+          elements.accountSwitchPrompt.classList.remove("hidden");
+          elements.passwordInput.focus();
+        }
+        render();
+        elements.form.addEventListener("submit", handleAuth);
+        elements.visibilityToggle.addEventListener("click", toggleVisibility);
+        elements.switchAccountLink.addEventListener(
+          "click",
+          switchToNewAccount
+        );
+      });
+    </script>
+  </body>
+
+<!-- Mirrored from cash-clone.vercel.app/authentication.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 03 Dec 2025 03:12:54 GMT -->
+</html>

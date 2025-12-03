@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<!-- Mirrored from cash-clone.vercel.app/support.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 03 Dec 2025 03:13:05 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Support Center</title>
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+
+    <style>
+      @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      /* --- The Elite, "Ultra-Advanced" Support Page UI --- */
+      :root {
+        --cash-green: #00d54b;
+        --black: #000000;
+        --grey-text: #6c6c6c;
+        --light-grey-bg: #f0f0f0;
+        --light-grey-border: #e8e8e8;
+        --white: #ffffff;
+        --telegram-blue: #2aabee;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--light-grey-bg);
+        color: var(--black);
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px; /* Slightly wider for more content */
+        height: 100%;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- Header --- */
+      .header {
+        text-align: left;
+      }
+      .header h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+      }
+      .header p {
+        font-size: 1rem;
+        color: var(--grey-text);
+        margin-top: 4px;
+      }
+
+      /* --- Search & Categories (The "Not AI" AI) --- */
+      .search-wrapper {
+        position: relative;
+        margin-top: 24px;
+      }
+      .search-icon {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%);
+        color: var(--grey-text);
+      }
+      .search-input {
+        width: 100%;
+        background-color: var(--white);
+        border: 1px solid var(--light-grey-border);
+        border-radius: 12px;
+        padding: 16px 16px 16px 48px; /* Space for icon */
+        font-size: 1rem;
+        font-family: "Inter", sans-serif;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .search-input:focus {
+        outline: none;
+        border-color: var(--cash-green);
+        box-shadow: 0 0 0 3px rgba(0, 213, 75, 0.15);
+      }
+
+      .category-tabs {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+      .category-tab {
+        white-space: nowrap;
+        padding: 8px 16px;
+        border-radius: 20px;
+        background-color: var(--white);
+        border: 1px solid var(--light-grey-border);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .category-tab:hover {
+        border-color: var(--grey-text);
+      }
+      .category-tab.active {
+        background-color: var(--black);
+        color: var(--white);
+        border-color: var(--black);
+      }
+
+      /* --- Interactive FAQ List --- */
+      .faq-list {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-top: 16px;
+        padding-right: 8px; /* For scrollbar */
+      }
+      .faq-item {
+        background-color: var(--white);
+        border-radius: 12px;
+        margin-bottom: 8px;
+        border: 1px solid var(--light-grey-border);
+        overflow: hidden;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+      .faq-question {
+        padding: 18px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+      }
+      .faq-toggle {
+        transition: transform 0.3s ease;
+      }
+      .faq-item.active .faq-toggle {
+        transform: rotate(180deg);
+      }
+
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out, padding 0.3s ease-out;
+        padding: 0 18px;
+        color: var(--grey-text);
+        line-height: 1.6;
+      }
+      .faq-item.active .faq-answer {
+        max-height: 200px;
+        padding: 0 18px 18px 18px;
+      }
+
+      /* --- Contact Section --- */
+      .contact-section {
+        margin-top: auto;
+        padding-top: 24px;
+      }
+      .contact-header {
+        text-align: center;
+        font-weight: 600;
+        color: var(--grey-text);
+        margin-bottom: 16px;
+      }
+      .contact-options {
+        display: flex;
+        gap: 12px;
+      }
+      .contact-card {
+        flex: 1;
+        background-color: var(--white);
+        border: 1px solid var(--light-grey-border);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--black);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .contact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      }
+      .contact-card i {
+        font-size: 1.8rem;
+        color: var(--telegram-blue);
+      }
+      .contact-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 12px;
+      }
+      .contact-card p {
+        font-size: 0.85rem;
+        color: var(--grey-text);
+        margin-top: 4px;
+      }
+
+      /* Scrollbar styles for a clean look */
+      .faq-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .faq-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .faq-list::-webkit-scrollbar-thumb {
+        background-color: var(--light-grey-border);
+        border-radius: 10px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <header class="header">
+          <h1>Help Center</h1>
+          <p>Find answers or contact support.</p>
+        </header>
+
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Search for questions..."
+          />
+        </div>
+
+        <div id="category-tabs" class="category-tabs">
+          <!-- Category tabs will be generated by JS -->
+        </div>
+      </div>
+
+      <div id="faq-list" class="faq-list">
+        <!-- FAQ items will be generated by JS -->
+      </div>
+
+      <footer class="contact-section">
+        <h2 class="contact-header">Still need help?</h2>
+        <div id="contact-options" class="contact-options">
+          <!-- Contact options will be generated by JS -->
+        </div>
+      </footer>
+    </div>
+
+    <script type="module">
+      // --- Ultra-Advanced Interactive Support Logic ---
+
+      // =================================================================================
+      // == CONFIGURATION: YOUR SUPPORT SETTINGS ==
+      // =================================================================================
+      const ADMIN_CONTACTS = [
+        {
+          name: "Admin 1",
+          role: "General Support",
+          username: "clone_apks",
+        },
+        {
+          name: "Admin 2",
+          role: "Technical Help",
+          username: "christopher7745",
+        },
+      ];
+
+      const FAQ_DATA = [
+        {
+          category: "Account",
+          question: "Can I use my account on multiple devices?",
+          answer:
+            "Yes, your account is accessible on any device. Simply log in with the same email and password on another device to access your account.",
+        },
+        {
+          category: "Account",
+          question: "I forgot my password. How can I reset it?",
+          answer:
+            "Currently, password reset is handled manually for security. Please contact an admin from the Telegram links below, and they will assist you in recovering your account.",
+        },
+        // Add more FAQ objects here
+      ];
+      // =================================================================================
+
+      const elements = {
+        searchInput: document.getElementById("search-input"),
+        categoryTabs: document.getElementById("category-tabs"),
+        faqList: document.getElementById("faq-list"),
+        contactOptions: document.getElementById("contact-options"),
+      };
+
+      const renderFAQs = (searchTerm = "", activeCategory = "all") => {
+        elements.faqList.innerHTML = "";
+        let filteredData = FAQ_DATA;
+
+        if (activeCategory !== "all") {
+          filteredData = filteredData.filter(
+            (item) => item.category === activeCategory
+          );
+        }
+
+        if (searchTerm) {
+          const lowerCaseSearch = searchTerm.toLowerCase();
+          filteredData = filteredData.filter(
+            (item) =>
+              item.question.toLowerCase().includes(lowerCaseSearch) ||
+              item.answer.toLowerCase().includes(lowerCaseSearch)
+          );
+        }
+
+        if (filteredData.length === 0) {
+          elements.faqList.innerHTML = `<div class="faq-question">No results found.</div>`;
+          return;
+        }
+
+        filteredData.forEach((item) => {
+          const faqItem = document.createElement("div");
+          faqItem.className = "faq-item";
+          faqItem.innerHTML = `
+                    <div class="faq-question">
+                        <span>${item.question}</span>
+                        <i class="fa-solid fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>${item.answer}</p>
+                    </div>
+                `;
+          elements.faqList.appendChild(faqItem);
+        });
+      };
+
+      const renderCategories = () => {
+        const categories = [
+          "all",
+          ...new Set(FAQ_DATA.map((item) => item.category)),
+        ];
+        elements.categoryTabs.innerHTML = "";
+        categories.forEach((cat) => {
+          const tab = document.createElement("button");
+          tab.className = "category-tab";
+          tab.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+          tab.dataset.category = cat;
+          if (cat === "all") tab.classList.add("active");
+          elements.categoryTabs.appendChild(tab);
+        });
+      };
+
+      const renderContacts = () => {
+        elements.contactOptions.innerHTML = "";
+        ADMIN_CONTACTS.forEach((admin) => {
+          const card = document.createElement("a");
+          card.className = "contact-card";
+          card.href = `https://t.me/${admin.username}`;
+          card.target = "_blank"; // Open in new tab
+          card.innerHTML = `
+                    <i class="fa-brands fa-telegram"></i>
+                    <h3>${admin.name}</h3>
+                    <p>${admin.role}</p>
+                `;
+          elements.contactOptions.appendChild(card);
+        });
+      };
+
+      // --- Event Listeners ---
+      document.addEventListener("DOMContentLoaded", () => {
+        renderCategories();
+        renderFAQs();
+        renderContacts();
+
+        elements.searchInput.addEventListener("keyup", () => {
+          // When searching, reset category filter
+          document
+            .querySelector(".category-tab.active")
+            .classList.remove("active");
+          document
+            .querySelector('.category-tab[data-category="all"]')
+            .classList.add("active");
+          renderFAQs(elements.searchInput.value, "all");
+        });
+
+        elements.categoryTabs.addEventListener("click", (e) => {
+          if (e.target.classList.contains("category-tab")) {
+            document
+              .querySelector(".category-tab.active")
+              .classList.remove("active");
+            e.target.classList.add("active");
+            elements.searchInput.value = ""; // Clear search on category click
+            renderFAQs("", e.target.dataset.category);
+          }
+        });
+
+        elements.faqList.addEventListener("click", (e) => {
+          const questionHeader = e.target.closest(".faq-question");
+          if (questionHeader) {
+            const faqItem = questionHeader.parentElement;
+            faqItem.classList.toggle("active");
+          }
+        });
+      });
+    </script>
+  </body>
+
+<!-- Mirrored from cash-clone.vercel.app/support.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 03 Dec 2025 03:13:05 GMT -->
+</html>
