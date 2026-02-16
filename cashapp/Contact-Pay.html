@@ -1,0 +1,2021 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="theme-color" content="#0f8038">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Cash Mode">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/Cash_App-Logo.wine.png">
+    <link rel="apple-touch-icon" href="icons/Cash_App-Logo.wine.png">
+    <script>
+      (() => {
+        const KEY = "cashAppDarkMode";
+        try {
+          const on = localStorage.getItem(KEY) === "true";
+          if (on) {
+            const root = document.documentElement;
+            root.setAttribute("data-theme", "dark");
+            root.classList.add("dark-boot");
+            root.style.backgroundColor = "#000";
+          }
+        } catch (e) {
+          /* silent */
+        }
+      })();
+    </script>
+    <style id="theme-boot-inline">
+      /* Prevent initial white flash before CSS loads */
+      html.dark-boot,
+      html.dark-boot body {
+        background: #000000 !important;
+        color: #ffffff !important;
+      }
+      html.dark-boot {
+        --accent-green: #00d54b;
+        --button-green: #555555;
+        --button-green-disabled: #444444;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color-light: #333333;
+        --app-bg-secondary: #1a1a1a;
+        --bg-primary: #000000;
+      }
+    </style>
+    <title>Cash App Payment</title>
+    <!-- Font Awesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <script src="guard.js"></script>
+    <script src="dark-mode.js"></script>
+    <style>
+      @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      /* Main App UI from your Final Code */
+      :root {
+        --accent-green: #00d54b;
+        --button-green: #00d54b;
+        --button-green-disabled: #f2f2f7;
+        --text-primary: #000000;
+        --text-secondary: #6c757d;
+        --border-color-light: #cfcfcf;
+        --app-bg-secondary: #f9f9f9;
+        --bg-primary: #ffffff;
+        --checkbox-border: #d8d8de;
+        --checkbox-bg: #ffffff;
+      }
+      body.dark-mode {
+        --button-green: #555555;
+        --button-green-disabled: #444444;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color-light: #333333;
+        --app-bg-secondary: #1a1a1a;
+        --bg-primary: #000000;
+        --checkbox-border: #555555;
+        --checkbox-bg: #3d3d3d;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+      .container {
+        max-width: 420px;
+        margin: 0 auto;
+        height: 100%;
+        background-color: var(--bg-primary);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .fixed-top-content {
+        background-color: var(--bg-primary);
+        position: relative;
+        z-index: 10;
+        padding: 0 18px;
+        flex-shrink: 0;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        position: relative;
+        padding-bottom: 0px;
+      }
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--border-color-light);
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 40px;
+        font-weight: 400;
+        cursor: pointer;
+      }
+      .amount {
+        font-size: 17px;
+        font-weight: 600;
+      }
+      .pay-btn {
+        background-color: var(--button-green-disabled);
+        color: #bcbcc0;
+        border: none;
+        padding: 6px 17px;
+        border-radius: 16px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: not-allowed;
+        transition: background-color 0.2s, color 0.2s;
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      .pay-btn.active {
+        background-color: var(--accent-green);
+        color: #ffffff;
+        cursor: pointer;
+      }
+      .input-group {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color-light);
+        padding: 14px 0;
+      }
+      .input-label {
+        color: var(--text-primary);
+        font-size: 15px;
+        font-weight: 600;
+        min-width: 35px;
+      }
+      .input-field {
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 16px;
+        padding: 7px 0;
+        outline: none;
+      }
+      .input-field::placeholder {
+        color: #c7c7cc;
+      }
+      .note-icon img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+      }
+      .payment-method {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        cursor: pointer;
+      }
+      .payment-left {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+      }
+      .cash-app-icon {
+        padding-left: 0px;
+      }
+      .cash-app-icon img {
+        gap: 0;
+        width: 25px;
+        height: 25px;
+      }
+      .balance-info {
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 600;
+        padding-left: 0.3rem;
+      }
+      .chevron {
+        color: #c7c7cc;
+        font-size: 16px;
+        padding-right: 10px;
+        font-weight: 300;
+      }
+      .suggested-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 7px;
+        margin-bottom: 15px;
+      }
+      .scrollable-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 0 16px;
+        position: relative;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 3px;
+        cursor: pointer;
+      }
+      .contact-details {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-grow: 1;
+      }
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-size: 893%;
+        background-position: center 14%;
+        background-color: #e5e5ea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 500;
+        cursor: pointer;
+        
+      }
+      .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .contact-name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .contact-handle {
+        color: var(--text-secondary);
+        font-size: 14px;
+        font-weight: 400;
+      }
+      .checkbox {
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--checkbox-border);
+        border-radius: 30%;
+        background-color: var(--checkbox-bg);
+        display: grid;
+        place-items: center;
+        margin-right: 15px;
+        transition: all 0.2s ease;
+      }
+      .contact-item.selected .checkbox {
+        background-color: var(--accent-green);
+        border-color: var(--accent-green);
+      }
+      .checkbox i {
+        color: white;
+        font-size: 14px;
+        transform: scale(0);
+        transition: transform 0.2s ease;
+      }
+      .contact-item.selected .checkbox i {
+        transform: scale(1);
+      }
+      .typed-recipient {
+        border: none;
+        border-radius: 0;
+        margin: 0;
+        padding: 15px 3px;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .typed-recipient.hidden {
+        display: none;
+      }
+      .typed-recipient .avatar {
+        width: 48px;
+        height: 48px;
+        background-color: #222222;
+        background-size: 893%;
+        background-position: center 14%;
+        font-size: 18px;
+        font-weight: 600;
+        border: 1px solid transparent;
+      }
+      .typed-recipient .checkbox {
+        border: 2px solid var(--checkbox-border);
+        background-color: var(--checkbox-bg);
+      }
+      .payment-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: flex-end;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .payment-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+      .payment-modal {
+        background: var(--app-bg-secondary);
+        border-radius: 20px 20px 0 0;
+        width: 100%;
+        padding: 8px 16px 24px 16px;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      .payment-overlay.active .payment-modal {
+        transform: translateY(0);
+      }
+      .modal-handle {
+        width: 40px;
+        height: 5px;
+        background: #d1d1d6;
+        border-radius: 2.5px;
+        margin: 0 auto 16px;
+      }
+      .payment-modal-header {
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .payment-modal-title {
+        color: var(--text-primary);
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .payment-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e5ea;
+        cursor: pointer;
+      }
+      .payment-option:last-of-type {
+        border-bottom: none;
+      }
+      .payment-option-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .payment-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .payment-icon.cash {
+        background-color: var(--accent-green);
+        border: 1px solid #e5e5ea;
+      }
+      .payment-icon.cash img,
+      .payment-icon.visa img {
+        width: 30px;
+        height: 30px;
+      }
+      .payment-icon.visa {
+        background-color: #ffffff;
+        border: 1px solid #e5e5ea;
+      }
+      .payment-option-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .payment-option-title {
+        color: var(--text-primary);
+        font-size: 16px;
+        font-weight: 400;
+      }
+      .payment-option-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+      .radio-button {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #c7c7cc;
+        border-radius: 50%;
+        position: relative;
+      }
+      .radio-button.selected {
+        border-color: var(--button-green);
+        background: var(--button-green);
+      }
+      .radio-button.selected::after {
+        content: "✓";
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .continue-btn {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color-light);
+        padding: 16px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 24px;
+        transition: background-color 0.2s;
+      }
+      .continue-btn:active {
+        background-color: #e5e5ea;
+      }
+      .edit-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-primary);
+        z-index: 4000;
+        transform: translateX(100%);
+        transition: transform 0.35s ease-in-out;
+      }
+      .edit-overlay.show {
+        transform: translateX(0);
+      }
+      .edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
+      }
+      .edit-close-btn,
+      .edit-done-btn {
+        font-size: 17px;
+        font-weight: 600;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .edit-done-btn {
+        color: var(--accent-green);
+      }
+      .edit-done-btn:disabled {
+        color: #a0e6bb;
+      }
+
+      /* [FIX] Edit Content perfectly placed and clean */
+      .edit-content {
+        padding: 32px 16px; /* Increased top padding */
+      }
+      .edit-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        background-color: #e9ecef;
+        display: block;
+        margin: 0 auto 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: white;
+      }
+      #edit-pic-input {
+        display: none;
+      }
+      .edit-content .input-group {
+        margin-bottom: 24px; /* Consistent margin */
+        border-bottom: none;
+        padding: 0;
+      }
+      .edit-content .input-group label {
+        display: block;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+      .edit-content .input-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+      }
+      .color-palette {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 24px;
+      }
+      .color-swatch {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        display: grid;
+        place-items: center;
+        color: white;
+        transition: border-color 0.2s;
+      }
+      .color-swatch.active {
+        border-color: var(--text-primary);
+      }
+      .color-swatch i {
+        transform: scale(0);
+        transition: transform 0.2s ease;
+      }
+      .color-swatch.active i {
+        transform: scale(1);
+      }
+
+      /* Alert and Loading Styles */
+      .alert-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 5000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .alert-modal-overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+      .alert-modal-content {
+        background-color: var(--bg-primary);
+        width: 100%;
+        max-width: 420px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        padding: 12px 18px 30px;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+      .alert-modal-overlay.show .alert-modal-content {
+        transform: translateY(0);
+      }
+      #alert-message {
+        font-size: 16px;
+        color: var(--text-primary);
+        margin: 20px 0;
+        font-weight: 500;
+        text-align: center;
+      }
+      .modal-action-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        background-color: var(--button-green);
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 28px;
+        cursor: pointer;
+        margin-top: auto;
+      }
+      .face-id-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(252, 251, 252, 0.98);
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .face-id-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .face-id-capsule-wrapper {
+        position: absolute;
+        top: 20px;
+        left: 49%;
+        transform: translateX(-50%);
+        width: 562px;
+        height: 150px;
+        animation: capsuleFloat 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @keyframes capsuleFloat {
+        0% {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-10px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+      .face-id-capsule-video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .face-id-content {
+        text-align: center;
+        margin-top: auto;
+        margin-bottom: auto;
+        display: none;
+      }
+      .face-id-video-wrapper {
+        width: 220px;
+        height: 220px;
+        border-radius: 32px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.05);
+        margin: 0 auto 24px;
+      }
+      .face-id-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 32px;
+      }
+      .face-id-text {
+        color: var(--text-primary);
+        font-size: 24px;
+        font-weight: 700;
+      }
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-primary);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      #loading-overlay.show {
+        display: flex;
+        transform: translateY(0);
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        animation: spin 1.2s linear infinite;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* Small suggested spinner shown under the "Suggested" title */
+      .suggested-spinner {
+        display: none;
+        width: 34px;
+        height: 34px;
+        margin: 8px auto 12px auto;
+        position: relative;
+        z-index: 12;
+      }
+      .suggested-spinner img {
+        width: 100%;
+        height: 100%;
+        animation: spin 1s linear infinite;
+        display: block;
+        margin: 0 auto;
+      }
+      .suggested-spinner.show {
+        display: block;
+      }
+      .suggested-overlay {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: var(--bg-primary);
+        z-index: 4;
+      }
+      .suggested-overlay.show {
+        display: block;
+      }
+      #success-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-primary);
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10000;
+        padding: 60px 24px 40px;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      #success-overlay.show {
+        display: flex;
+        transform: translateY(0);
+      }
+      .success-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 420px;
+      }
+      .success-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--accent-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+      }
+      .success-icon i {
+        color: white;
+        font-size: 32px;
+      }
+      .success-message {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+      .success-recipient {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .success-note {
+        margin-top: 6px;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .success-done-btn {
+        width: 100%;
+        max-width: 420px;
+        padding: 16px;
+        background-color: var(--accent-green);
+        color: white;
+        border: none;
+        border-radius: 28px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="fixed-top-content">
+        <header class="header">
+          <a href="pay.html"><button class="close-btn">×</button></a>
+          <div class="amount" id="amount">$88.00</div>
+          <button class="pay-btn" id="payBtn">Pay</button>
+        </header>
+        <div class="form-section">
+          <div class="input-group">
+            <label for="toInput" class="input-label">To</label>
+            <input type="text" id="toInput" class="input-field" placeholder="Name, $Cashtag, Phone, Email">
+          </div>
+          <div class="input-group">
+            <label for="forInput" class="input-label">For</label>
+            <input type="text" id="forInput" class="input-field" placeholder="Note (required)">
+            <div class="note-icon">
+              <img src="icons/file_000000002e7c620a9c33e8cf24d4606c.png" alt="Note">
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="payment-method" id="paymentMethod">
+              <div class="payment-left">
+                <span class="input-label">Use</span>
+                <div id="mainPaymentIcon" class="cash-app-icon">
+                  <img src="icons/Cash_App-Logo.wine.png" alt="Cash App">
+                </div>
+                <div id="mainPaymentInfo" class="balance-info">Cash balance: $53,381.23</div>
+              </div>
+              <div class="chevron"><i class="fas fa-chevron-down"></i></div>
+            </div>
+          </div>
+        </div>
+        <h2 class="suggested-title">Suggested</h2>
+      </div>
+      <div class="scrollable-content">
+        <div id="suggestedSpinner" class="suggested-spinner" aria-hidden="true">
+          <img src="icons/green_spinner_thick.png" alt="Loading suggestions">
+        </div>
+        <div id="suggestedOverlay" class="suggested-overlay" aria-hidden="true"></div>
+        <div id="typedRecipient" class="contact-item typed-recipient hidden">
+          <div class="contact-details">
+            <div class="avatar" id="typedRecipientAvatar" data-avatar-mode="cashtag" style="background-image: none; background-size: 893%; background-position: center 23%; background-color: rgb(34, 34, 34);"></div>
+            <div class="contact-info">
+              <div class="contact-name" id="typedRecipientName"></div>
+              <div class="contact-handle" id="typedRecipientHandle"></div>
+            </div>
+          </div>
+          <div class="checkbox">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+        <div id="contactList" style="display: block;"><div class="contact-item" data-id="2" data-name="diego" data-cashtag="$dm"><div class="contact-details"><div class="avatar" style="background-image: url('data:image/jpeg;base64,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'); background-size: 725%; background-position: center 22%;" data-edit-id="2"></div><div class="contact-info"><div class="contact-name">Diego</div><div class="contact-handle">$dm</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="1" data-name="jay z" data-cashtag="$sc"><div class="contact-details"><div class="avatar" style="background-image: url('images/jayz.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="1"></div><div class="contact-info"><div class="contact-name">Jay Z</div><div class="contact-handle">$sc</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="3" data-name="sandy g." data-cashtag="$sandy"><div class="contact-details"><div class="avatar" style="background-color:#FF7F50;" data-edit-id="3">S</div><div class="contact-info"><div class="contact-name">Sandy G.</div><div class="contact-handle">$sandy</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="4" data-name="diego martinez" data-cashtag="$dm"><div class="contact-details"><div class="avatar" style="background-image: url('images/oy.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="4"></div><div class="contact-info"><div class="contact-name">Diego Martinez</div><div class="contact-handle">$dm</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="5" data-name="jennifer" data-cashtag="$jennifer"><div class="contact-details"><div class="avatar" style="background-image: url('images/jessica.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="5"></div><div class="contact-info"><div class="contact-name">Jennifer</div><div class="contact-handle">$Jennifer</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="6" data-name="alice green" data-cashtag="$aliceg"><div class="contact-details"><div class="avatar" style="background-color:#20B2AA;" data-edit-id="6">A</div><div class="contact-info"><div class="contact-name">Alice Green</div><div class="contact-handle">$aliceg</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="7" data-name="john appleseed" data-cashtag="$johnny"><div class="contact-details"><div class="avatar" style="background-image: url('images/johnny.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="7"></div><div class="contact-info"><div class="contact-name">John Appleseed</div><div class="contact-handle">$johnny</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="8" data-name="maria garcia" data-cashtag="$mgarcia"><div class="contact-details"><div class="avatar" style="background-image: url('images/gi.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="8"></div><div class="contact-info"><div class="contact-name">Maria Garcia</div><div class="contact-handle">$mgarcia</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="9" data-name="david smith" data-cashtag="$dsmith"><div class="contact-details"><div class="avatar" style="background-image: url('images/john.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="9"></div><div class="contact-info"><div class="contact-name">David Smith</div><div class="contact-handle">$dsmith</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="10" data-name="tech innovations inc." data-cashtag="$techinc"><div class="contact-details"><div class="avatar" style="background-color:#20B2AA;" data-edit-id="10">T</div><div class="contact-info"><div class="contact-name">Tech Innovations Inc.</div><div class="contact-handle">$techinc</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="11" data-name="emily jones" data-cashtag="$emilyj"><div class="contact-details"><div class="avatar" style="background-image: url('images/emily.jpeg'); background-size: 725%; background-position: center 22%;" data-edit-id="11"></div><div class="contact-info"><div class="contact-name">Emily Jones</div><div class="contact-handle">$emilyj</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="12" data-name="carlos rodriguez" data-cashtag="$carlosr"><div class="contact-details"><div class="avatar" style="background-color:#8A2BE2;" data-edit-id="12">C</div><div class="contact-info"><div class="contact-name">Carlos Rodriguez</div><div class="contact-handle">$carlosr</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="13" data-name="local coffee shop" data-cashtag="$cornercup"><div class="contact-details"><div class="avatar" style="background-image: url('images/coffe.png'); background-size: 725%; background-position: center 22%;" data-edit-id="13"></div><div class="contact-info"><div class="contact-name">Local Coffee Shop</div><div class="contact-handle">$cornercup</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div><div class="contact-item" data-id="14" data-name="punchmadedomo" data-cashtag="$denaro"><div class="contact-details"><div class="avatar" style="background-image: url('images/demo.jpg'); background-size: 725%; background-position: center 22%;" data-edit-id="14"></div><div class="contact-info"><div class="contact-name">punchmadedomo</div><div class="contact-handle">$denaro</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div></div>
+      </div>
+    </div>
+    <div class="payment-overlay" id="paymentOverlay">
+      <div class="payment-modal">
+        <div class="modal-handle"></div>
+        <div class="payment-modal-header">
+          <div class="payment-modal-title">Select a payment method</div>
+        </div>
+        <div class="payment-option" id="cashOption">
+          <div class="payment-option-left">
+            <div class="payment-icon cash">
+              <img src="icons/Cash_App-Logo.wine.png" alt="Cash Icon">
+            </div>
+            <div class="payment-option-info">
+              <div class="payment-option-title">Cash balance</div>
+              <div class="payment-option-subtitle" id="modal-balance-subtitle">$53,381.23</div>
+            </div>
+          </div>
+          <div class="radio-button"></div>
+        </div>
+        <div class="payment-option" id="visaOption">
+          <div class="payment-option-left">
+            <div class="payment-icon visa">
+              <img src="icons/mastercard-2-logo-svgrepo-com.png" alt="Card Icon">
+            </div>
+            <div class="payment-option-info">
+              <div class="payment-option-title">Debit card •••• 4042</div>
+            </div>
+          </div>
+          <div class="radio-button"></div>
+        </div>
+        <button class="continue-btn" id="continueBtn">Continue</button>
+      </div>
+    </div>
+    <div class="edit-overlay" id="edit-contact-overlay">
+      <header class="edit-header">
+        <button class="edit-close-btn" id="edit-close-btn">Close</button>
+        <h2>Edit Contact</h2>
+        <button class="edit-done-btn" id="edit-done-btn" disabled="">Done</button>
+      </header>
+      <main class="edit-content">
+        <div class="edit-avatar" id="edit-avatar"></div>
+        <input type="file" id="edit-pic-input" accept="image/*">
+        <div class="input-group">
+          <label for="edit-name">Name</label><input type="text" id="edit-name">
+        </div>
+        <div class="input-group">
+          <label for="edit-cashtag">Cashtag</label><input type="text" id="edit-cashtag">
+        </div>
+        <div class="input-group">
+          <label>Theme Color</label>
+          <div class="color-palette" id="color-palette"></div>
+        </div>
+      </main>
+    </div>
+    <div class="alert-modal-overlay" id="alert-modal-overlay">
+      <div class="alert-modal-content">
+        <p id="alert-message"></p>
+        <button class="modal-action-btn" id="alert-ok-btn">OK</button>
+      </div>
+    </div>
+    <!-- Face ID Verification Modal -->
+    <div id="faceIdModal" class="face-id-modal">
+      <div class="face-id-capsule-wrapper">
+        <video class="face-id-capsule-video" src="icons/faceidiphone17.mp4" playsinline="" muted="" autoplay="" loop=""></video>
+      </div>
+      <div class="face-id-content">
+        <div class="face-id-video-wrapper">
+          <video id="faceIdVideo" class="face-id-video" src="icons/faceIDvideo.mp4" playsinline="" muted="" preload="auto"></video>
+        </div>
+        <p id="faceIdText" class="face-id-text"></p>
+      </div>
+    </div>
+
+    <div id="loading-overlay">
+      <img src="icons/green_spinner_thick.png" alt="Loading..." class="spinner">
+    </div>
+
+    <div id="success-overlay">
+      <div class="success-content">
+        <div class="success-icon">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="success-message" id="success-message">You sent $0</div>
+        <div class="success-recipient" id="success-recipient">to Name</div>
+        <div class="success-note" id="success-note"></div>
+      </div>
+      <button class="success-done-btn" id="success-done-btn">Done</button>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const payBtn = document.getElementById("payBtn"),
+          toInput = document.getElementById("toInput"),
+          forInput = document.getElementById("forInput"),
+          amountDisplay = document.getElementById("amount"),
+          contactListEl = document.getElementById("contactList"),
+          typedRecipientContainer = document.getElementById("typedRecipient"),
+          typedRecipientAvatar = document.getElementById("typedRecipientAvatar"),
+          typedRecipientName = document.getElementById("typedRecipientName"),
+          typedRecipientHandle = document.getElementById("typedRecipientHandle"),
+          mainPaymentIcon = document.getElementById("mainPaymentIcon"),
+          mainPaymentInfo = document.getElementById("mainPaymentInfo"),
+          paymentMethodRow = document.getElementById("paymentMethod"),
+          paymentOverlay = document.getElementById("paymentOverlay"),
+          continueBtn = document.getElementById("continueBtn"),
+          modalBalanceSubtitle = document.getElementById(
+            "modal-balance-subtitle"
+          ),
+          editOverlay = document.getElementById("edit-contact-overlay"),
+          editAvatar = document.getElementById("edit-avatar"),
+          editPicInput = document.getElementById("edit-pic-input"),
+          editName = document.getElementById("edit-name"),
+          editCashtag = document.getElementById("edit-cashtag"),
+          colorPalette = document.getElementById("color-palette"),
+          editDoneBtn = document.getElementById("edit-done-btn"),
+          editCloseBtn = document.getElementById("edit-close-btn"),
+          alertModalOverlay = document.getElementById("alert-modal-overlay"),
+          alertMessage = document.getElementById("alert-message"),
+          alertOkBtn = document.getElementById("alert-ok-btn"),
+          loadingOverlay = document.getElementById("loading-overlay"),
+          suggestedSpinner = document.getElementById("suggestedSpinner"),
+          suggestedOverlay = document.getElementById("suggestedOverlay"),
+          successOverlay = document.getElementById("success-overlay"),
+          successMessage = document.getElementById("success-message"),
+          successRecipient = document.getElementById("success-recipient"),
+          successNote = document.getElementById("success-note"),
+          successDoneBtn = document.getElementById("success-done-btn");
+        const successNoteKey = "cashAppSuccessNote";
+        function setSuggestedSpinnerVisible(visible) {
+          if (suggestedSpinner) {
+            suggestedSpinner.classList.toggle("show", Boolean(visible));
+          }
+          if (suggestedOverlay) {
+            suggestedOverlay.classList.toggle("show", Boolean(visible));
+          }
+        }
+        const contactStorageKey = "cashAppContacts",
+          balanceStorageKey = "cashAppBalance",
+          paymentAmountKey = "paymentAmount",
+          pendingRecipientDataKey = "pendingRecipientData",
+          pendingPaymentMessageKey = "pendingPaymentMessage";
+        const searchModeStorageKey = "cashAppRecipientSearchMode";
+        const SEARCH_MODE_DEFAULT = "cash";
+        const allowedSearchModes = new Set(["cash", "tiktok", "both"]);
+        let contacts = [],
+          selectedContact = null,
+          typedRecipientData = null,
+          editingContact = null,
+          activePaymentMethod = "cash",
+          typedRecipientUpdateTimer = null,
+          latestTikTokLookupToken = 0;
+        let recipientSearchMode = getStoredSearchMode();
+        const availableColors = [
+          "#8A2BE2",
+          "#FF7F50",
+          "#1E90FF",
+          "#20B2AA",
+          "#FF4500",
+          "#DA70D6",
+        ];
+        const defaultContacts = [
+          {
+            id: 1,
+            name: "Jay Z",
+            cashtag: "$sc",
+            avatar: "images/jayz.jpeg",
+            color: "#666",
+          },
+          {
+            id: 2,
+            name: "Diego",
+            cashtag: "$dm",
+            avatar: "",
+            color: "#8A2BE2",
+          },
+          {
+            id: 3,
+            name: "Sandy G.",
+            cashtag: "$sandy",
+            avatar: "",
+            color: "#FF7F50",
+          },
+          {
+            id: 4,
+            name: "Diego Martinez",
+            cashtag: "$dm",
+            avatar: "images/oy.jpeg",
+            color: "#8A2BE2",
+          },
+          {
+            id: 5,
+            name: "Jennifer",
+            cashtag: "$Jennifer",
+            avatar: "images/jessica.jpeg",
+            color: "#1E90FF",
+          },
+          {
+            id: 6,
+            name: "Alice Green",
+            cashtag: "$aliceg",
+            avatar: "",
+            color: "#20B2AA",
+          },
+          {
+            id: 7,
+            name: "John Appleseed",
+            cashtag: "$johnny",
+            avatar: "images/johnny.jpeg",
+            color: "#666",
+          },
+          {
+            id: 8,
+            name: "Maria Garcia",
+            cashtag: "$mgarcia",
+            avatar: "images/gi.jpeg",
+            color: "#FF69B4",
+          },
+          {
+            id: 9,
+            name: "David Smith",
+            cashtag: "$dsmith",
+            avatar: "images/john.jpeg",
+            color: "#1E90FF",
+          },
+          {
+            id: 10,
+            name: "Tech Innovations Inc.",
+            cashtag: "$techinc",
+            avatar: "",
+            color: "#20B2AA",
+          },
+          {
+            id: 11,
+            name: "Emily Jones",
+            cashtag: "$emilyj",
+            avatar: "images/emily.jpeg",
+            color: "#FF7F50",
+          },
+          {
+            id: 12,
+            name: "Carlos Rodriguez",
+            cashtag: "$carlosr",
+            avatar: "",
+            color: "#8A2BE2",
+          },
+          {
+            id: 13,
+            name: "Local Coffee Shop",
+            cashtag: "$cornercup",
+            avatar: "images/coffe.png",
+            color: "#DAA520",
+          },
+          {
+            id: 14,
+            name: "punchmadedomo",
+            cashtag: "$denaro",
+            avatar: "images/demo.jpg",
+            color: "#DAA520",
+          },
+        ];
+        const isTikTokProfile = (entity = {}) => {
+          const platform = (entity.platform || "").toLowerCase();
+          if (platform === "tiktok") return true;
+          const handle = (entity.cashtag || "").trim();
+          return handle.startsWith("@");
+        };
+        const normalizeCashtagInput = (value = "") =>
+          value
+            .trim()
+            .toLowerCase()
+            .replace(/^\$/, "")
+            .replace(/[^a-z0-9]/g, "");
+        const placeholderBase = "Name, $Cashtag, Phone, Email";
+        const placeholderByMode = {
+          cash: placeholderBase,
+          tiktok: placeholderBase,
+          both: placeholderBase,
+        };
+        function getStoredSearchMode() {
+          const stored = localStorage.getItem(searchModeStorageKey);
+          return allowedSearchModes.has(stored) ? stored : SEARCH_MODE_DEFAULT;
+        }
+        function shouldUseTikTokLookup(rawValue = "", modeOverride) {
+          const trimmed = rawValue.trim();
+          if (!trimmed) return false;
+          const mode = modeOverride || recipientSearchMode;
+          if (mode === "tiktok") return true;
+          if (mode === "both") return trimmed.startsWith("@");
+          return false;
+        }
+        function applySearchModeUI() {
+          if (!toInput) return;
+          toInput.placeholder =
+            placeholderByMode[recipientSearchMode] || placeholderByMode.cash;
+        }
+        function buildHandleFromInput(rawValue = "") {
+          const trimmed = rawValue.trim();
+          if (!trimmed) return "";
+          if (shouldUseTikTokLookup(trimmed)) {
+            const username = trimmed.replace(/^@+/, "");
+            return username ? `@${username}` : "";
+          }
+          const normalized = normalizeCashtagInput(trimmed);
+          return normalized ? `$${normalized}` : trimmed;
+        }
+        function handlesMatch(a = "", b = "") {
+          return a.trim().toLowerCase() === b.trim().toLowerCase();
+        }
+        const buildShareImageUrl = (handle) =>
+          `https://cash.app/share-image?ct=${encodeURIComponent(
+            handle
+          )}&w=1200&h=600`;
+        const formatHandleForDisplay = (handle = "") => {
+          const trimmed = handle.trim();
+          if (trimmed.startsWith("@")) {
+            return `$${trimmed.replace(/^@+/, "")}`;
+          }
+          return trimmed;
+        };
+        const formatCurrency = (amount) =>
+          `$${Number(amount).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`;
+        const getContacts = () => {
+          const stored = localStorage.getItem(contactStorageKey);
+          if (!stored) {
+            localStorage.setItem(
+              contactStorageKey,
+              JSON.stringify(defaultContacts)
+            );
+            return defaultContacts;
+          }
+          return JSON.parse(stored);
+        };
+        const saveContacts = () =>
+          localStorage.setItem(contactStorageKey, JSON.stringify(contacts));
+        function renderContacts() {
+          contactListEl.innerHTML = contacts
+            .map((contact) => {
+              const contactName = contact.name || "";
+              const contactCashtag = contact.cashtag || "";
+              const hasAvatarImage = Boolean(contact.avatar);
+              const fallbackColor = contact.color || "#666666";
+              const isTikTokContact = hasAvatarImage && isTikTokProfile(contact);
+              const avatarStyles = hasAvatarImage
+                ? isTikTokContact
+                  ? `background-image: url('${contact.avatar}'); background-size: cover; background-position: center; background-color: #000000;`
+                    : `background-image: url('${contact.avatar}'); background-size: 725%; background-position: center 22%;`
+                : `background-color:${fallbackColor};`;
+              const avatarContent = hasAvatarImage
+                ? `<div class="avatar${
+                    isTikTokContact ? " avatar-tiktok" : ""
+                  }" style="${avatarStyles}" data-edit-id="${contact.id}"></div>`
+                  : `<div class="avatar" style="${avatarStyles}" data-edit-id="${contact.id}">${
+                    contact.initial || contactName.charAt(0)
+                  }</div>`;
+              return `<div class="contact-item" data-id="${
+                contact.id
+              }" data-name="${contactName.toLowerCase()}" data-cashtag="${contactCashtag.toLowerCase()}"><div class="contact-details">${avatarContent}<div class="contact-info"><div class="contact-name">${
+                contactName
+              }</div><div class="contact-handle">${
+                formatHandleForDisplay(contactCashtag)
+              }</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div>`;
+            })
+            .join("");
+        }
+        function handleContactSelection(targetItem) {
+          const id = targetItem.dataset.id;
+          const isSelected = targetItem.classList.contains("selected");
+          document
+            .querySelectorAll(".contact-item.selected")
+            .forEach((i) => i.classList.remove("selected"));
+          if (!isSelected) {
+            targetItem.classList.add("selected");
+            selectedContact = contacts.find((c) => c.id == id);
+            // Convert @ to $ for display in input field
+            const displayValue = selectedContact.cashtag && selectedContact.cashtag.startsWith('@') 
+              ? selectedContact.cashtag.replace(/^@/, '$') 
+              : selectedContact.name;
+            toInput.value = displayValue;
+            clearTypedRecipientPreview();
+          } else {
+            selectedContact = null;
+            toInput.value = "";
+          }
+
+          updatePayButtonState();
+        }
+        const filterContactsOnInput = (rawValue = "", useTikTokLookup = false) => {
+          const query = rawValue.toLowerCase();
+          const normalizedQuery = query.replace(/^[@$]/, '');
+
+          if (useTikTokLookup) {
+            // When doing TikTok lookup, hide duplicate matches
+            let hasExactMatch = false;
+            
+            contactListEl.querySelectorAll(".contact-item").forEach((item) => {
+              const name = item.dataset.name;
+              const cashtag = item.dataset.cashtag.replace(/^[@$]/, '');
+              
+              // Check if this contact matches the search exactly
+              if (name === normalizedQuery || cashtag === normalizedQuery) {
+                hasExactMatch = true;
+                item.style.display = "flex";
+              } else {
+                item.style.display = "flex";
+              }
+            });
+            
+            // Hide typed recipient preview if there's an exact match in contacts
+            if (hasExactMatch && typedRecipientData) {
+              const typedHandle = (typedRecipientData.cashtag || '').replace(/^[@$]/, '');
+              const typedName = (typedRecipientData.name || '').toLowerCase();
+              
+              contactListEl.querySelectorAll(".contact-item").forEach((item) => {
+                const contactName = item.dataset.name;
+                const contactHandle = item.dataset.cashtag.replace(/^[@$]/, '');
+                
+                // Hide typed preview if it matches any existing contact
+                if (contactName === typedName || contactHandle === typedHandle) {
+                  typedRecipientContainer.classList.add("hidden");
+                }
+              });
+            }
+            return;
+          }
+
+          if (query.trim()) {
+            let hasMatchingContact = false;
+
+            contactListEl.querySelectorAll(".contact-item").forEach((item) => {
+              const name = item.dataset.name;
+              const cashtag = item.dataset.cashtag;
+              const matches = name.includes(query) || cashtag.includes(query);
+              item.style.display = matches ? "flex" : "none";
+              if (matches) hasMatchingContact = true;
+            });
+
+            if (hasMatchingContact) {
+              typedRecipientContainer.classList.add("hidden");
+            }
+          } else {
+            contactListEl
+              .querySelectorAll(".contact-item")
+              .forEach((item) => {
+                item.style.display = "flex";
+              });
+          }
+        };
+        function setPayButtonVisual(isEnabled) {
+          payBtn.classList.toggle("active", isEnabled);
+          if (isEnabled) {
+            payBtn.style.backgroundColor = "var(--accent-green)";
+            payBtn.style.color = "#ffffff";
+            payBtn.style.cursor = "pointer";
+          } else {
+            payBtn.style.backgroundColor = "var(--button-green-disabled)";
+            payBtn.style.color = "#bcbcc0";
+            payBtn.style.cursor = "not-allowed";
+          }
+        }
+        function setTypedAvatarMode(isTikTok) {
+          typedRecipientAvatar.dataset.avatarMode = isTikTok
+            ? "tiktok"
+            : "cashtag";
+          typedRecipientAvatar.style.backgroundSize = isTikTok
+            ? "cover"
+            : "893%";
+          typedRecipientAvatar.style.backgroundPosition = isTikTok
+            ? "center"
+            : "center 23%";
+          typedRecipientAvatar.style.backgroundColor = isTikTok
+            ? "#000000"
+            : "#222222";
+        }
+        function loadTypedRecipientAvatar(url, fallbackName = "", options = {}) {
+          const {
+            isTikTok = false,
+            fallbackToTikTok = false,
+            fallbackUsername = "",
+          } = options;
+          const fallbackInitial = (fallbackName.trim().charAt(0) || "?")
+            .toUpperCase();
+          setTypedAvatarMode(isTikTok);
+          typedRecipientAvatar.style.backgroundImage = "none";
+          typedRecipientAvatar.textContent = fallbackInitial;
+          if (!url) return;
+          const previewImage = new Image();
+          previewImage.onload = () => {
+            typedRecipientAvatar.style.backgroundImage = `url(${url})`;
+            typedRecipientAvatar.textContent = "";
+          };
+          previewImage.onerror = () => {
+            typedRecipientAvatar.style.backgroundImage = "none";
+            typedRecipientAvatar.textContent = fallbackInitial;
+            if (!isTikTok && fallbackToTikTok && fallbackUsername.length >= 3) {
+              runTikTokProfileLookup(`@${fallbackUsername}`);
+            }
+          };
+          previewImage.src = url;
+        }
+        function clearTypedRecipientPreview(options = { restoreList: true }) {
+          typedRecipientData = null;
+          latestTikTokLookupToken += 1;
+          typedRecipientContainer.classList.add("hidden");
+          typedRecipientContainer.classList.remove("selected");
+          typedRecipientAvatar.style.backgroundImage = "none";
+          typedRecipientAvatar.textContent = "";
+          setTypedAvatarMode(false);
+          // Optionally hide spinner and restore contact list when preview cleared
+          if (options.restoreList) {
+            setSuggestedSpinnerVisible(false);
+            if (contactListEl) contactListEl.style.display = "block";
+          }
+        }
+        function updateTypedRecipientPreview(rawValue, forceTikTokLookup) {
+          const trimmedValue = rawValue.trim();
+          if (!trimmedValue) {
+            clearTypedRecipientPreview();
+            return;
+          }
+
+          const useTikTokLookup =
+            forceTikTokLookup !== undefined
+              ? forceTikTokLookup
+              : shouldUseTikTokLookup(trimmedValue);
+
+          if (useTikTokLookup) {
+            runTikTokProfileLookup(trimmedValue);
+            return;
+          }
+
+          latestTikTokLookupToken += 1;
+
+          const normalizedHandle = normalizeCashtagInput(trimmedValue);
+          if (normalizedHandle.length < 3) {
+            clearTypedRecipientPreview();
+            return;
+          }
+
+          const query = trimmedValue.toLowerCase();
+          let hasMatchingContact = false;
+          contactListEl.querySelectorAll(".contact-item").forEach((item) => {
+            const name = item.dataset.name;
+            const cashtag = item.dataset.cashtag;
+            if (name.includes(query) || cashtag.includes(query)) {
+              hasMatchingContact = true;
+            }
+          });
+
+          if (hasMatchingContact) {
+            clearTypedRecipientPreview();
+            return;
+          }
+
+          typedRecipientData = {
+            id: `typed-${normalizedHandle}`,
+            name:
+              trimmedValue.replace(/^\$/, "") || `$${normalizedHandle}`,
+            cashtag: `$${normalizedHandle}`,
+            avatar: buildShareImageUrl(normalizedHandle),
+            color: "#6c757d",
+          };
+          typedRecipientName.textContent = typedRecipientData.name;
+          typedRecipientHandle.textContent = formatHandleForDisplay(
+            typedRecipientData.cashtag
+          );
+          typedRecipientContainer.classList.remove("hidden");
+          typedRecipientContainer.classList.remove("selected");
+          loadTypedRecipientAvatar(
+            typedRecipientData.avatar,
+            typedRecipientData.name,
+            {
+              isTikTok: false,
+              fallbackToTikTok:
+                recipientSearchMode === "both" && normalizedHandle.length >= 3,
+              fallbackUsername: normalizedHandle,
+            }
+          );
+          // hide small spinner now that the typed preview is ready
+          setSuggestedSpinnerVisible(false);
+          if (contactListEl) {
+            // show filtered contact list after spinner hides
+            const rawValue = toInput ? toInput.value : "";
+            const useTikTokLookup = shouldUseTikTokLookup(rawValue);
+            filterContactsOnInput(rawValue, useTikTokLookup);
+            contactListEl.style.display = "block";
+          }
+        }
+        function scheduleTypedRecipientPreviewUpdate(rawValue, useTikTokLookup) {
+          clearTimeout(typedRecipientUpdateTimer);
+          if (!rawValue.trim()) {
+            clearTypedRecipientPreview();
+            return;
+          }
+          typedRecipientUpdateTimer = setTimeout(() => {
+            updateTypedRecipientPreview(rawValue, useTikTokLookup);
+          }, useTikTokLookup ? 400 : 250);
+        }
+
+        async function runTikTokProfileLookup(rawValue) {
+          const username = rawValue.replace(/^[@$]+/, "").trim();
+          if (!username || username.length < 3) {
+            clearTypedRecipientPreview();
+            return;
+          }
+
+          const lookupToken = ++latestTikTokLookupToken;
+          typedRecipientData = null;
+          typedRecipientContainer.classList.remove("hidden");
+          typedRecipientContainer.classList.remove("selected");
+          typedRecipientName.textContent = `$${username}`;
+          typedRecipientHandle.textContent = "";
+          typedRecipientAvatar.style.backgroundImage = "none";
+          typedRecipientAvatar.textContent =
+            username.charAt(0).toUpperCase() || "@";
+          setTypedAvatarMode(true);
+
+          try {
+            const response = await fetch(
+              `/api/tiktok/profile/${encodeURIComponent(username)}`
+            );
+            const result = await response.json();
+
+            if (lookupToken !== latestTikTokLookupToken) {
+              return;
+            }
+
+            if (result.success && result.data) {
+              // Check if this profile already exists in contacts
+              const normalizedUsername = result.data.username.toLowerCase();
+              const normalizedNickname = (result.data.nickname || '').toLowerCase();
+              
+              let isDuplicate = false;
+              contactListEl.querySelectorAll(".contact-item").forEach((item) => {
+                const contactName = item.dataset.name;
+                const contactHandle = item.dataset.cashtag.replace(/^[@$]/, '');
+                
+                if (contactName === normalizedNickname || contactName === normalizedUsername || 
+                    contactHandle === normalizedUsername) {
+                  isDuplicate = true;
+                }
+              });
+              
+              if (isDuplicate) {
+                // stop spinner and show contact list if duplicate
+                setSuggestedSpinnerVisible(false);
+                if (contactListEl) contactListEl.style.display = "block";
+                clearTypedRecipientPreview();
+                return;
+              }
+              
+              typedRecipientData = {
+                id: `tiktok-${result.data.username}`,
+                name:
+                  result.data.nickname || `$${result.data.username}`,
+                cashtag: `@${result.data.username}`,
+                avatar: result.data.avatar || "",
+                color: "#6c757d",
+                platform: "tiktok",
+                stats: {
+                  followers: result.data.followers,
+                  likes: result.data.likes,
+                },
+              };
+              typedRecipientName.textContent = typedRecipientData.name;
+              typedRecipientHandle.textContent = formatHandleForDisplay(
+                typedRecipientData.cashtag
+              );
+              loadTypedRecipientAvatar(
+                typedRecipientData.avatar,
+                typedRecipientData.name,
+                { isTikTok: true }
+              );
+              // hide spinner now that TikTok profile resolved (show filtered list)
+              setSuggestedSpinnerVisible(false);
+              if (contactListEl) {
+                const rawValue = toInput ? toInput.value : "";
+                const useTikTokLookup = shouldUseTikTokLookup(rawValue);
+                filterContactsOnInput(rawValue, useTikTokLookup);
+                contactListEl.style.display = "block";
+              }
+            } else {
+              typedRecipientHandle.textContent = "Profile not found";
+              // hide spinner and restore list after a short delay
+              setSuggestedSpinnerVisible(false);
+              if (contactListEl) contactListEl.style.display = "block";
+              setTimeout(() => {
+                if (lookupToken === latestTikTokLookupToken) {
+                  clearTypedRecipientPreview();
+                }
+              }, 1400);
+            }
+          } catch (error) {
+            console.error("TikTok profile lookup failed", error);
+            if (lookupToken === latestTikTokLookupToken) {
+              typedRecipientHandle.textContent = "Lookup failed";
+              // hide spinner and restore list after a short delay
+              setSuggestedSpinnerVisible(false);
+              if (contactListEl) contactListEl.style.display = "block";
+              setTimeout(() => {
+                if (lookupToken === latestTikTokLookupToken) {
+                  clearTypedRecipientPreview();
+                }
+              }, 1400);
+            }
+          }
+        }
+
+        function updatePayButtonState() {
+          const shouldEnable = Boolean(
+            selectedContact ||
+              typedRecipientContainer.classList.contains("selected")
+          );
+          setPayButtonVisual(Boolean(shouldEnable));
+        }
+        function openEditModal(id) {
+          editingContact = { ...contacts.find((c) => c.id == id) };
+          if (!editingContact) return;
+          editName.value = editingContact.name;
+          editCashtag.value = editingContact.cashtag;
+          updateEditAvatar();
+          populateColorPalette();
+          editDoneBtn.disabled = true;
+          editOverlay.classList.add("show");
+        }
+        const closeEditModal = () => editOverlay.classList.remove("show");
+        function updateEditAvatar() {
+          if (editingContact.avatar) {
+            editAvatar.style.backgroundImage = `url(${editingContact.avatar})`;
+            editAvatar.innerHTML = "";
+          } else {
+            editAvatar.style.backgroundImage = "none";
+            editAvatar.style.backgroundColor = editingContact.color;
+            editAvatar.innerHTML =
+              editingContact.initial || editingContact.name.charAt(0);
+          }
+        }
+        function populateColorPalette() {
+          colorPalette.innerHTML = availableColors
+            .map(
+              (c) =>
+                `<div class="color-swatch ${
+                  c === editingContact.color ? "active" : ""
+                }" style="background-color:${c};" data-color="${c}"><i class="fa-solid fa-check"></i></div>`
+            )
+            .join("");
+        }
+        function handleSaveChanges() {
+          const index = contacts.findIndex((c) => c.id === editingContact.id);
+          if (index > -1) {
+            contacts[index] = editingContact;
+            saveContacts();
+            renderContacts();
+            if (selectedContact && selectedContact.id === editingContact.id) {
+              document
+                .querySelector(`.contact-item[data-id="${editingContact.id}"]`)
+                .classList.add("selected");
+            }
+          }
+          closeEditModal();
+        }
+        function openPaymentModal() {
+          updatePaymentModalUI(activePaymentMethod);
+          paymentOverlay.style.display = "flex";
+          setTimeout(() => paymentOverlay.classList.add("active"), 10);
+        }
+        function closePaymentModal() {
+          paymentOverlay.classList.remove("active");
+          setTimeout(() => (paymentOverlay.style.display = "none"), 300);
+        }
+        function handlePaymentOptionSelection(e) {
+          updatePaymentModalUI(
+            e.currentTarget.id === "cashOption" ? "cash" : "visa"
+          );
+        }
+        function updatePaymentModalUI(selection) {
+          document
+            .getElementById("cashOption")
+            .querySelector(".radio-button")
+            .classList.toggle("selected", selection === "cash");
+          document
+            .getElementById("visaOption")
+            .querySelector(".radio-button")
+            .classList.toggle("selected", selection === "visa");
+        }
+        function updateMainPaymentDisplay(method) {
+          if (method === "cash") {
+            mainPaymentIcon.innerHTML = `<img src="icons/Cash_App-Logo.wine.png" alt="Cash App" />`;
+            mainPaymentInfo.textContent = `Cash balance: ${formatCurrency(
+              localStorage.getItem(balanceStorageKey) || 0
+            )}`;
+          } else if (method === "visa") {
+            mainPaymentIcon.innerHTML = `<img src="icons/mastercard-2-logo-svgrepo-com.png" alt="Card" />`;
+            mainPaymentInfo.textContent = "Debit card •••• 4042";
+          }
+        }
+        // Hybrid Face ID authentication
+        async function authenticateWithFaceId() {
+          try {
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+
+            const credentialId = localStorage.getItem('cashAppFaceIdCredential');
+            if (!credentialId) {
+              return false;
+            }
+
+            const publicKeyCredentialRequestOptions = {
+              challenge: challenge,
+              timeout: 60000,
+              userVerification: "required"
+            };
+
+            const assertion = await navigator.credentials.get({
+              publicKey: publicKeyCredentialRequestOptions
+            });
+
+            return assertion !== null;
+          } catch (error) {
+            console.error('Face ID authentication error:', error);
+            return false;
+          }
+        }
+
+        function handlePayment() {
+          if (!payBtn.classList.contains("active")) return;
+          const paymentAmount = parseFloat(
+            localStorage.getItem(paymentAmountKey) || "547"
+          );
+          const cashBalance = parseFloat(
+            localStorage.getItem(balanceStorageKey) || "53936.23"
+          );
+          if (paymentAmount > cashBalance) {
+            showAlert("Insufficient funds");
+            return;
+          }
+          const typedValue = toInput.value.trim();
+          const typedHandle = buildHandleFromInput(typedValue);
+          const typedPreviewMatchesInput =
+            typedRecipientData &&
+            typedHandle &&
+            handlesMatch(typedRecipientData.cashtag, typedHandle);
+          let recipientData = selectedContact;
+          if (
+            (!recipientData || recipientData.isTypedRecipient) &&
+            typedPreviewMatchesInput
+          ) {
+            recipientData = {
+              ...typedRecipientData,
+              name:
+                typedValue.replace(/^[@$]/, "") || typedRecipientData.name,
+              cashtag: typedHandle || typedRecipientData.cashtag,
+            };
+          }
+          if (!recipientData) {
+            recipientData = {
+              id: `temp-${Date.now()}`,
+              name: typedValue.replace(/^\$/, ""),
+              cashtag: typedHandle || typedValue,
+              avatar: typedPreviewMatchesInput
+                ? typedRecipientData?.avatar || ""
+                : "",
+              color: "#6c757d",
+            };
+          }
+          localStorage.setItem(
+            pendingRecipientDataKey,
+            JSON.stringify(recipientData)
+          );
+          localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
+          
+          // Simulated Face ID with video animations
+          const faceIdEnabled = localStorage.getItem('cashAppFaceIdEnabled') === 'true';
+          const faceIdType = localStorage.getItem('cashAppFaceIdType') || 'iphone17';
+          
+          if (faceIdEnabled) {
+            // Show Face ID animation based on selected type
+            const faceIdModal = document.getElementById("faceIdModal");
+            const capsuleWrapper = faceIdModal.querySelector('.face-id-capsule-wrapper');
+            const mainContent = faceIdModal.querySelector('.face-id-content');
+            const capsuleVideo = faceIdModal.querySelector('.face-id-capsule-video');
+            const faceIdVideo = document.getElementById("faceIdVideo");
+            
+            if (faceIdType === 'iphone13') {
+              // Show Face ID 13 style (centered)
+              if (capsuleWrapper) capsuleWrapper.style.display = 'none';
+              if (mainContent) mainContent.style.display = 'block';
+              
+              // Play centered video
+              if (faceIdVideo) {
+                faceIdVideo.loop = false;
+                faceIdVideo.pause();
+                faceIdVideo.currentTime = 0;
+                faceIdVideo.play().catch(() => {});
+              }
+            } else {
+              // Show iPhone 17 style (capsule at top)
+              if (capsuleWrapper) capsuleWrapper.style.display = 'block';
+              if (mainContent) mainContent.style.display = 'none';
+              
+              // Capsule video auto-plays (already set to autoplay loop in HTML)
+            }
+            
+            faceIdModal.style.display = "flex";
+            setTimeout(() => faceIdModal.classList.add("show"), 10);
+            
+            // After 2 seconds, proceed with payment
+            setTimeout(() => {
+              faceIdModal.classList.remove("show");
+              setTimeout(() => {
+                faceIdModal.style.display = "none";
+                if (faceIdVideo) faceIdVideo.pause();
+                proceedWithPayment(paymentAmount, cashBalance, recipientData);
+              }, 300);
+            }, 2000);
+          } else {
+            // No Face ID - proceed directly
+            proceedWithPayment(paymentAmount, cashBalance, recipientData);
+          }
+        }
+
+        function getSuccessNote() {
+          const stored = localStorage.getItem(successNoteKey);
+          if (stored === null) {
+            return "Payment arrives within 72 hours.";
+          }
+          return stored.trim();
+        }
+
+        function proceedWithPayment(paymentAmount, cashBalance, recipientData) {
+          // Show loading spinner with slide-up
+          loadingOverlay.style.display = "flex";
+          setTimeout(() => loadingOverlay.classList.add("show"), 10);
+          
+          // After 3 seconds, show success screen and deduct balance
+          setTimeout(() => {
+            loadingOverlay.classList.remove("show");
+            setTimeout(() => {
+              loadingOverlay.style.display = "none";
+              
+              // DEDUCT PAYMENT FROM BALANCE
+              const newBalance = cashBalance - paymentAmount;
+              localStorage.setItem(balanceStorageKey, newBalance.toString());
+              
+              // Update success screen content
+              successMessage.textContent = `You sent ${formatCurrency(paymentAmount)}`;
+              successRecipient.textContent = `to ${recipientData.name}`;
+              if (successNote) successNote.textContent = getSuccessNote();
+              
+              // Show success screen with slide-up
+              successOverlay.style.display = "flex";
+              setTimeout(() => successOverlay.classList.add("show"), 10);
+            }, 400);
+          }, 3000);
+        }
+        function showAlert(message) {
+          alertMessage.textContent = message;
+          alertModalOverlay.classList.add("show");
+        }
+        const paymentAmount =
+          localStorage.getItem(paymentAmountKey) || "547.00";
+        const cashBalance =
+          localStorage.getItem(balanceStorageKey) || "53936.23";
+        localStorage.setItem(paymentAmountKey, paymentAmount);
+        localStorage.setItem(balanceStorageKey, cashBalance);
+        amountDisplay.textContent = formatCurrency(paymentAmount);
+        mainPaymentInfo.textContent = `Cash balance: ${formatCurrency(
+          cashBalance
+        )}`;
+        modalBalanceSubtitle.textContent = formatCurrency(cashBalance);
+        contacts = getContacts();
+        renderContacts();
+        clearTypedRecipientPreview();
+        applySearchModeUI();
+        toInput.addEventListener("input", () => {
+          document
+            .querySelectorAll(".contact-item.selected")
+            .forEach((item) => item.classList.remove("selected"));
+          selectedContact = null;
+          const rawValue = toInput.value;
+          const useTikTokLookup = shouldUseTikTokLookup(rawValue);
+
+          // Clear any previous typed preview immediately and keep list hidden
+          clearTypedRecipientPreview({ restoreList: false });
+          // While user is typing, hide the contact list and show a small spinner
+          if (rawValue.trim()) {
+            setSuggestedSpinnerVisible(true);
+            contactListEl.style.display = "none";
+          } else {
+            setSuggestedSpinnerVisible(false);
+            contactListEl.style.display = "block";
+          }
+
+          // Keep the scheduled typed-recipient preview/update logic
+          filterContactsOnInput(rawValue, useTikTokLookup);
+          scheduleTypedRecipientPreviewUpdate(rawValue, useTikTokLookup);
+          updatePayButtonState();
+        });
+        forInput.addEventListener("input", updatePayButtonState);
+        contactListEl.addEventListener("click", (e) => {
+          const avatar = e.target.closest(".avatar");
+          const item = e.target.closest(".contact-item");
+          if (avatar) {
+            openEditModal(avatar.dataset.editId);
+          } else if (item) {
+            handleContactSelection(item);
+          }
+        });
+        typedRecipientContainer.addEventListener("click", () => {
+          if (typedRecipientContainer.classList.contains("hidden")) return;
+          if (!typedRecipientData) return;
+          const alreadySelected = typedRecipientContainer.classList.contains(
+            "selected"
+          );
+          document
+            .querySelectorAll(".contact-item.selected")
+            .forEach((item) => item.classList.remove("selected"));
+          if (alreadySelected) {
+            selectedContact = null;
+            typedRecipientContainer.classList.remove("selected");
+          } else {
+            typedRecipientContainer.classList.add("selected");
+            selectedContact = { ...typedRecipientData, isTypedRecipient: true };
+            // Convert @ to $ for display in input field
+            const displayValue = typedRecipientData.platform === "tiktok" && typedRecipientData.cashtag.startsWith('@')
+              ? typedRecipientData.cashtag.replace(/^@/, '$')
+              : typedRecipientData.name;
+            toInput.value = displayValue;
+          }
+          updatePayButtonState();
+        });
+        editCloseBtn.addEventListener("click", closeEditModal);
+        editDoneBtn.addEventListener("click", handleSaveChanges);
+        editAvatar.addEventListener("click", () => editPicInput.click());
+        editPicInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (re) => {
+            editingContact.avatar = re.target.result;
+            updateEditAvatar();
+            editDoneBtn.disabled = false;
+          };
+          reader.readAsDataURL(file);
+        });
+        [editName, editCashtag].forEach((input) =>
+          input.addEventListener("input", () => {
+            editingContact[input.id.split("-")[1]] = input.value;
+            editDoneBtn.disabled = false;
+          })
+        );
+        colorPalette.addEventListener("click", (e) => {
+          const swatch = e.target.closest(".color-swatch");
+          if (!swatch) return;
+          editingContact.color = swatch.dataset.color;
+          editingContact.avatar = "";
+          updateEditAvatar();
+          populateColorPalette();
+          editDoneBtn.disabled = false;
+        });
+        paymentMethodRow.addEventListener("click", openPaymentModal);
+        paymentOverlay.addEventListener("click", (e) => {
+          if (e.target === paymentOverlay) closePaymentModal();
+        });
+        continueBtn.addEventListener("click", () => {
+          const isCashSelected = document
+            .getElementById("cashOption")
+            .querySelector(".radio-button")
+            .classList.contains("selected");
+          activePaymentMethod = isCashSelected ? "cash" : "visa";
+          updateMainPaymentDisplay(activePaymentMethod);
+          closePaymentModal();
+        });
+        document
+          .querySelectorAll(".payment-modal .payment-option")
+          .forEach((option) =>
+            option.addEventListener("click", handlePaymentOptionSelection)
+          );
+        payBtn.addEventListener("click", handlePayment);
+        alertOkBtn.addEventListener("click", () =>
+          alertModalOverlay.classList.remove("show")
+        );
+        window.addEventListener("storage", (event) => {
+          if (event.key === searchModeStorageKey) {
+            recipientSearchMode = getStoredSearchMode();
+            applySearchModeUI();
+            const rawValue = toInput.value;
+            const useTikTokLookup = shouldUseTikTokLookup(rawValue);
+            scheduleTypedRecipientPreviewUpdate(rawValue, useTikTokLookup);
+          }
+        });
+        successDoneBtn.addEventListener("click", () => {
+          // Move the paid recipient to the top of contacts list
+          const recipientData = JSON.parse(localStorage.getItem(pendingRecipientDataKey) || 'null');
+          
+          if (recipientData) {
+            // Check if this contact already exists in the list
+            // Normalize handles by removing @ and $ for comparison
+            const normalizeHandle = (handle) => (handle || '').replace(/^[@$]+/, '').toLowerCase();
+            const recipientHandle = normalizeHandle(recipientData.cashtag);
+            const recipientName = (recipientData.name || '').toLowerCase();
+            
+            const existingIndex = contacts.findIndex(c => {
+              const contactHandle = normalizeHandle(c.cashtag);
+              // Match if handles are the same (ignoring @ and $ prefix)
+              return contactHandle === recipientHandle;
+            });
+            
+            if (existingIndex > -1) {
+              const existingContact = contacts.splice(existingIndex, 1)[0];
+              if (recipientData.avatar) {
+                existingContact.avatar = recipientData.avatar;
+              }
+              if (recipientData.color) {
+                existingContact.color = recipientData.color;
+              }
+              if (recipientData.platform) {
+                existingContact.platform = recipientData.platform;
+              }
+              contacts.unshift(existingContact);
+            } else {
+              const newContact = {
+                id: Date.now(),
+                name: recipientData.name,
+                cashtag: recipientData.cashtag,
+                avatar: recipientData.avatar || '',
+                color: recipientData.color || availableColors[Math.floor(Math.random() * availableColors.length)]
+              };
+              if (recipientData.platform) {
+                newContact.platform = recipientData.platform;
+              }
+              contacts.unshift(newContact);
+            }
+            
+            // Save updated contacts list
+            saveContacts();
+          }
+          
+          window.location.href = "pay.html";
+        });
+      });
+    </script>
+  
+
+</body></html>

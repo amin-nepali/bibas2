@@ -1,0 +1,70 @@
+.section-header {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 24px 0 12px 4px;
+}
+.savings-list-card {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-card);
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.savings-list-card .details {
+  display: flex;
+  flex-direction: column;
+}
+.savings-list-card .title {
+  font-size: 16px;
+  font-weight: 700;
+}
+.savings-list-card .balance {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 4px 0 8px;
+}
+.savings-list-card.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.savings-list-card .chevron-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 9px;
+  height: 15px;
+}
+.savings-list-card .icon-container {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  align-self: flex-end;
+  position: relative;
+}
+.savings-list-card .icon-container svg.icon {
+  width: 24px;
+  height: 24px;
+  fill: var(--accent-green);
+  z-index: 1;
+}
+.savings-list-card .progress-ring-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.savings-list-card .progress-ring-circle {
+  transition: stroke-dashoffset 0.5s ease;
+  stroke-linecap: round;
+}

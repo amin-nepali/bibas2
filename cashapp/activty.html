@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   Activity - Cash App
+  </title>
+  <script>
+   (() => {
+        const DARK_MODE_KEY = "cashAppDarkMode";
+        try {
+          const prefersDark = localStorage.getItem(DARK_MODE_KEY) === "true";
+          if (prefersDark) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            document.documentElement.classList.add("dark-boot");
+            document.documentElement.style.backgroundColor = "#000";
+          }
+        } catch (err) {
+          /* silent */
+        }
+      })();
+  </script>
+  <style id="theme-boot-inline">
+   /* Prevent initial white flash before CSS loads */
+      html.dark-boot,
+      html.dark-boot body {
+        background: #000000 !important;
+        color: #ffffff !important;
+      }
+      html.dark-boot {
+        --app-bg-color: #000000;
+        --app-bg-secondary: #1a1a1a;
+        --card-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color-light: #333333;
+        --button-green: #555555;
+      }
+  </style>
+  <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" referrerpolicy="no-referrer" rel="stylesheet"/>
+  <script src="guard.js">
+  </script>
+  <script src="dark-mode.js">
+  </script>
+  <script src="fix-images.js">
+  </script>
+  <style>
+   @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      :root {
+        --header-height: 65px;
+        --padding-screen: 18px;
+        --app-bg-color: #ffffff;
+        --app-bg-secondary: #f0f1f2;
+        --card-bg-color: #ffffff;
+        --text-primary: #000000;
+        --text-secondary: #6c757d;
+        --border-color-light: #e9ecef;
+        --border-radius-card: 12px;
+        --accent-green: #00d54b;
+        --button-green: #00d54b;
+        --accent-red: #ff3b30;
+        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+      }
+      html[data-theme="dark"] {
+        --app-bg-color: #000000;
+        --app-bg-secondary: #1a1a1a;
+        --card-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color-light: #333333;
+        --button-green: #555555;
+      }
+      body.dark-mode {
+        --app-bg-color: #000000;
+        --app-bg-secondary: #1a1a1a;
+        --card-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color-light: #333333;
+        --button-green: #555555;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--font-family);
+        background-color: var(--app-bg-color);
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .activity-container {
+        max-width: 450px;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .activity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px var(--padding-screen);
+        height: var(--header-height);
+        flex-shrink: 0;
+      }
+      .activity-header h1 {
+        font-size: 23px;
+        font-weight: 600;
+      }
+      .profile-icon-link {
+        display: block;
+        width: 36px;
+        height: 36px;
+      }
+      .profile-icon {
+        font-size: 16px;
+        color: var(--text-secondary);
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        object-fit: cover;
+      }
+      .search-bar-container {
+        padding: 0 var(--padding-screen) 10px;
+        flex-shrink: 0;
+      }
+      .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--app-bg-secondary);
+        border-radius: 8px;
+        padding: 10px;
+      }
+      .search-bar i {
+        color: var(--text-secondary);
+      }
+      .search-bar input {
+        flex-grow: 1;
+        border: none;
+        background: none;
+        outline: none;
+        font-size: 16px;
+      }
+      .quick-actions {
+        display: flex;
+        gap: 12px;
+        padding: 16px var(--padding-screen);
+        flex-shrink: 0;
+      }
+      .quick-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .quick-action-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        background-repeat: no-repeat;
+      }
+      .quick-action-icon.green {
+        background-color: var(--button-green);
+        color: white;
+      }
+      .quick-action-icon.avatar {
+        background-size: 950%;
+        background-position: center 21%;
+        background-color: #e5e5ea;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .quick-action-label {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .activity-list-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-bottom: 65px;
+      }
+      .date-group-header {
+        padding: 12px var(--padding-screen);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        background-color: var(--app-bg-secondary);
+        border-top: 1px solid var(--border-color-light);
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .transaction-list {
+        list-style: none;
+        background-color: var(--card-bg-color);
+      }
+      .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 12px var(--padding-screen);
+        border-bottom: 1px solid var(--border-color-light);
+        cursor: pointer;
+        transition: height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+      }
+      .transaction-item:last-child {
+        border-bottom: none;
+      }
+      .transaction-item.deleting {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      .transaction-item.hide {
+        display: none;
+      }
+      .transaction-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 600;
+        background-size: 950%;
+        background-position: center 21%;
+        background-repeat: no-repeat;
+        color: white;
+        overflow: hidden;
+      }
+      .transaction-icon {
+        background-color: var(--button-green);
+      }
+      .transaction-details {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .transaction-name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .transaction-info {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+      .transaction-amount {
+        font-size: 16px;
+        font-weight: 600;
+        text-align: right;
+      }
+      .transaction-amount.positive {
+        color: var(--accent-green);
+      }
+      .empty-state {
+        text-align: center;
+        padding: 10vh var(--padding-screen);
+      }
+      .empty-state h2 {
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .empty-state p {
+        font-size: 16px;
+        color: var(--text-secondary);
+        margin-top: 8px;
+        margin-bottom: 30px;
+      }
+      .empty-invite-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: var(--button-green);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-size: 32px;
+        margin: 0 auto 16px;
+      }
+      .empty-invite-text {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .details-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--app-bg-color);
+        color: var(--text-primary);
+        z-index: 4000;
+        transform: translateX(100%);
+        transition: transform 0.35s ease-in-out;
+        display: flex;
+        flex-direction: column;
+      }
+      .details-overlay.show {
+        transform: translateX(0);
+      }
+      .details-header {
+        display: flex;
+        padding: 16px;
+      }
+      .details-close-btn {
+        font-size: 28px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+      .details-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 0 var(--padding-screen);
+      }
+      .details-hero {
+        text-align: center;
+        padding: 20px 0;
+      }
+      .details-hero .transaction-avatar {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 12px;
+        font-size: 32px;
+      }
+      .details-hero .transaction-name {
+        font-size: 22px;
+      }
+      .details-hero .transaction-info {
+        color: var(--text-secondary);
+      }
+      .details-amount {
+        font-size: 48px;
+        font-weight: 600;
+        margin: 20px 0;
+      }
+      .details-list {
+        list-style: none;
+        margin-top: 24px;
+        padding: 16px;
+        background-color: var(--card-bg-color);
+        border-radius: var(--border-radius-card);
+      }
+      .details-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .details-item:last-child {
+        border-bottom: none;
+      }
+      .details-icon {
+        font-size: 20px;
+        width: 24px;
+        text-align: center;
+        color: var(--text-secondary);
+      }
+      .details-label {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .details-value {
+        margin-left: auto;
+        color: var(--text-secondary);
+        text-align: right;
+      }
+      .details-value i {
+        color: var(--text-secondary);
+      }
+      .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid var(--border-color-light);
+        background-color: var(--card-bg-color);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 65px;
+        padding: 0 var(--padding-screen);
+        z-index: 200;
+      }
+      .nav-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+        font-weight: 600;
+        color: #8c8c8c;
+        min-width: 44px;
+      }
+      .nav-button svg {
+        fill: #8c8c8c;
+      }
+      .nav-button.disabled,
+      .nav-button:disabled {
+        cursor: default;
+        opacity: 0.45;
+        pointer-events: none;
+      }
+      .nav-button.disabled svg,
+      .nav-button:disabled svg {
+        fill: rgba(140, 140, 140, 0.5);
+      }
+      .nav-button.active,
+      .nav-button.active svg {
+        color: var(--text-primary);
+        fill: var(--text-primary);
+      }
+      #nav-balance-display {
+        font-size: 16px;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 5000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        background-color: var(--card-bg-color);
+        width: 100%;
+        max-width: 450px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        padding: 12px 18px 30px;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+      .modal-overlay.show .modal-content {
+        transform: translateY(0);
+      }
+      .delete-modal-content {
+        text-align: center;
+        padding: 20px;
+      }
+      .delete-modal-content p {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .delete-modal-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .delete-modal-btn {
+        padding: 14px;
+        border-radius: 28px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+      }
+      .delete-modal-btn.confirm {
+        background-color: var(--accent-red);
+        color: white;
+      }
+      .delete-modal-btn.cancel {
+        background-color: #e9ecef;
+        color: var(--text-primary);
+      }
+  </style>
+ </head>
+ <body>
+  <div class="activity-container">
+   <meta content="#0f8038" name="theme-color"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+   <meta content="Cash Mode" name="apple-mobile-web-app-title"/>
+   <link href="site.webmanifest" rel="manifest"/>
+   <link href="Cash_App-Logo.wine.png" rel="icon" sizes="192x192" type="image/png"/>
+   <link href="Cash_App-Logo.wine.png" rel="apple-touch-icon"/>
+   <link href="loading-spinner.css" rel="stylesheet"/>
+   <header class="activity-header">
+    <h1>
+     Activity
+    </h1>
+    <a class="profile-icon-link" href="profile.html">
+    </a>
+   </header>
+   <div class="search-bar-container">
+    <div class="search-bar">
+     <i class="fa-solid fa-magnifying-glass">
+     </i>
+     <input id="search-input" placeholder="Search transactions" type="text"/>
+    </div>
+   </div>
+   <div class="quick-actions" id="quick-actions-container">
+   </div>
+   <div class="activity-list-container" id="activity-list-container">
+   </div>
+   <nav class="bottom-nav">
+    <a href="home.html">
+     <button aria-label="Home" class="nav-button" id="nav-balance-display">
+     </button>
+    </a>
+    <a href="card.html">
+     <button aria-label="Cards" class="nav-button">
+      <svg height="18" viewbox="0 0 24 21" width="22">
+       <path clip-rule="evenodd" d="M131.25 21H145.25C146.355 21 147.25 21.8954 147.25 23V33C147.25 34.1046 146.355 35 145.25 35H131.25C130.145 35 129.25 34.1046 129.25 33V23C129.25 21.8954 130.145 21 131.25 21ZM126.25 23C126.25 20.2386 128.489 18 131.25 18H145.25C148.011 18 150.25 20.2386 150.25 23V33C150.25 35.7614 148.011 38 145.25 38H131.25C128.489 38 126.25 35.7614 126.25 33V23ZM134.25 24C133.145 24 132.25 24.8954 132.25 26C132.25 27.1046 133.145 28 134.25 28H135.25C136.355 28 137.25 27.1046 137.25 26C137.25 24.8954 136.355 24 135.25 24H134.25Z" fill-rule="evenodd" transform="translate(-126.25 -18)">
+       </path>
+      </svg>
+     </button>
+    </a>
+    <a href="pay.html">
+     <button aria-label="Pay" class="nav-button">
+      <svg height="20" viewbox="0 0 15 23" width="14">
+       <path d="M217.675 23.8903C217.923 24.1401 218.336 24.1401 218.569 23.8903L219.811 22.5912C220.075 22.3414 220.06 21.8917 219.782 21.6218C218.805 20.7669 217.671 20.1148 216.442 19.7032L216.835 17.8045C216.919 17.3897 216.611 17 216.199 17H213.794C213.643 17.0016 213.498 17.0551 213.382 17.1515C213.267 17.2479 213.187 17.3814 213.158 17.5296L212.81 19.2185C209.61 19.3834 206.897 21.0173 206.897 24.365C206.897 27.263 209.138 28.5071 211.508 29.3616C213.749 30.221 214.937 30.5408 214.937 31.7499C214.937 32.9941 213.754 33.7236 212.005 33.7236C210.415 33.7236 208.745 33.189 207.453 31.8848C207.393 31.8244 207.322 31.7765 207.243 31.7438C207.165 31.7111 207.081 31.6942 206.996 31.6942C206.911 31.6942 206.827 31.7111 206.748 31.7438C206.67 31.7765 206.599 31.8244 206.539 31.8848L205.197 33.2339C205.071 33.3613 205 33.5338 205 33.7136C205 33.8934 205.071 34.0659 205.197 34.1933C206.241 35.2276 207.562 35.9771 209.069 36.3918L208.701 38.1756C208.617 38.5903 208.92 38.975 209.332 38.98L211.743 39C211.895 39.0007 212.042 38.9482 212.16 38.8516C212.278 38.755 212.359 38.6202 212.388 38.4704L212.736 36.7765C216.586 36.5167 218.932 34.3831 218.932 31.2703C218.932 28.4022 216.596 27.193 213.764 26.2087C212.144 25.6041 210.743 25.1894 210.743 23.9453C210.743 22.7361 212.05 22.2564 213.361 22.2564C215.031 22.2564 216.636 22.9509 217.685 23.9003L217.675 23.8903Z" transform="translate(-205 -17)">
+       </path>
+      </svg>
+     </button>
+    </a>
+    <button aria-disabled="true" aria-label="Search" class="nav-button disabled" type="button">
+     <svg height="21" viewbox="0 0 23 24" width="21">
+      <path clip-rule="evenodd" d="M291.75 26.5C291.75 30.0899 288.84 33 285.25 33C281.66 33 278.75 30.0899 278.75 26.5C278.75 22.9101 281.66 20 285.25 20C288.84 20 291.75 22.9101 291.75 26.5ZM290.823 34.1944C289.258 35.3302 287.332 36 285.25 36C280.003 36 275.75 31.7467 275.75 26.5C275.75 21.2533 280.003 17 285.25 17C290.497 17 294.75 21.2533 294.75 26.5C294.75 28.582 294.08 30.5076 292.944 32.0731L297.882 37.0104C298.468 37.5962 298.468 38.546 297.882 39.1317C297.296 39.7175 296.346 39.7175 295.76 39.1317L290.823 34.1944Z" fill-rule="evenodd" transform="translate(-276.25 -16.5)">
+      </path>
+     </svg>
+    </button>
+    <a href="#">
+     <button aria-label="Activity" class="nav-button active">
+      <svg height="22" viewbox="0 0 24 25" width="22">
+       <path clip-rule="evenodd" d="M370 28C370 32.9706 365.971 37 361 37C356.029 37 352 32.9706 352 28C352 23.0294 356.029 19 361 19C365.971 19 370 23.0294 370 28ZM373 28C373 34.6274 367.627 40 361 40C354.373 40 349 34.6274 349 28C349 21.3726 354.373 16 361 16C367.627 16 373 21.3726 373 28ZM362.5 24C362.5 23.1716 361.828 22.5 361 22.5C360.172 22.5 359.5 23.1716 359.5 24V27.4893C359.5 28.4591 360.061 29.3414 360.939 29.753L364.363 31.3582C365.113 31.7098 366.007 31.3868 366.358 30.6367C366.71 29.8865 366.387 28.9934 365.637 28.6418L362.5 27.1715V24Z" fill-rule="evenodd" transform="translate(-349 -16)">
+       </path>
+      </svg>
+     </button>
+    </a>
+   </nav>
+  </div>
+  <div class="details-overlay" id="details-overlay">
+  </div>
+  <div class="modal-overlay" id="delete-modal-overlay">
+   <div class="modal-content delete-modal-content">
+    <p>
+     Are you sure you want to delete this transaction?
+    </p>
+    <div class="delete-modal-actions">
+     <button class="delete-modal-btn cancel" id="delete-cancel-btn">
+      No
+     </button>
+     <button class="delete-modal-btn confirm" id="delete-confirm-btn">
+      Yes
+     </button>
+    </div>
+   </div>
+  </div>
+  <script>
+   const profileIconLink = document.querySelector(".profile-icon-link");
+      const quickActionsContainer = document.getElementById(
+        "quick-actions-container"
+      );
+      const activityListContainer = document.getElementById(
+        "activity-list-container"
+      );
+      const detailsOverlay = document.getElementById("details-overlay");
+      const searchInput = document.getElementById("search-input");
+      const deleteModalOverlay = document.getElementById(
+        "delete-modal-overlay"
+      );
+      const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+      const deleteCancelBtn = document.getElementById("delete-cancel-btn");
+
+      const userProfileKey = "cashAppUserProfile",
+        contactStorageKey = "cashAppContacts",
+        transactionsKey = "cashAppTransactions";
+      const defaultProfile = { fullName: "Jane Doe", profilePic: "" };
+      const defaultContacts = [
+        {
+          id: 1,
+          name: "Jay Z",
+          cashtag: "$sc",
+          avatar: "images/jayz.jpeg",
+          color: "#666",
+        },
+      ];
+      const isTikTokProfile = (entity = {}) => {
+        const platform = (entity.platform || "").toLowerCase();
+        if (platform === "tiktok") return true;
+        const handle = (entity.cashtag || "").trim();
+        return handle.startsWith("@");
+      };
+
+      let longPressTimer;
+      let transactionToDelete = null;
+
+      const formatCurrency = (amount, sign = true) =>
+        `${sign ? (amount < 0 ? "− " : "+") : ""}$${Math.abs(
+          amount
+        ).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+
+      // --- FIX --- Reverted to your original styling for payment amounts (e.g., $50 instead of $50.00)
+      const formatSimpleCurrency = (amount) =>
+        `$${Math.abs(amount).toLocaleString("en-US")}`;
+
+      const generateTransactionNumber = () =>
+        `#D-${Math.random().toString(16).substr(2, 8).toUpperCase()}`;
+
+      const escapeHtml = (value = "") =>
+        String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+      const escapeAttr = (value = "") =>
+        escapeHtml(value).replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+      const getInitial = (value = "") => {
+        const trimmed = String(value).trim();
+        return trimmed ? trimmed.charAt(0).toUpperCase() : "?";
+      };
+
+      function getRelativeDate(date) {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (date.toDateString() === today.toDateString()) return "Today";
+        if (date.toDateString() === yesterday.toDateString())
+          return "Yesterday";
+        return date.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      function renderActivity(query = "") {
+        // --- FIX --- The sort function is correct and ensures newest transactions are first.
+        const transactions = (
+          JSON.parse(localStorage.getItem(transactionsKey)) || []
+        ).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const contacts =
+          JSON.parse(localStorage.getItem(contactStorageKey)) ||
+          defaultContacts;
+        const latestContact = contacts[0] || {};
+        const latestContactNameRaw =
+          latestContact.name || latestContact.cashtag || "Contact";
+        const latestContactLabel = escapeHtml(latestContactNameRaw);
+        const latestContactInitial = getInitial(latestContactNameRaw);
+        const latestContactHasAvatar = Boolean(latestContact.avatar);
+        const latestContactIsTikTok =
+          latestContactHasAvatar && isTikTokProfile(latestContact);
+        const avatarStyle = latestContactHasAvatar
+          ? `style="background-image:url('${escapeAttr(
+              latestContact.avatar
+            )}');${
+              latestContactIsTikTok
+                ? "background-position:center;background-size:cover;background-color:#000000;"
+                : "background-position:center 22%;background-size:700%;"
+            }"`
+          : `style="background-color:${escapeAttr(
+              latestContact.color || "#222222"
+            )};"`;
+        const avatarContent = latestContactHasAvatar ? "" : latestContactInitial;
+        const latestContactAvatarClass = `quick-action-icon avatar${
+          latestContactHasAvatar && latestContactIsTikTok
+            ? " avatar-tiktok"
+            : ""
+        }`;
+
+        quickActionsContainer.innerHTML = `
+          <div class="quick-action">
+            <div class="quick-action-icon green"><i class="fa-solid fa-plus"></i></div>
+            <span class="quick-action-label">Get $5</span>
+          </div>
+          <div class="quick-action">
+            <div class="${latestContactAvatarClass}" ${avatarStyle}>${avatarContent}</div>
+            <span class="quick-action-label">${latestContactLabel}</span>
+          </div>`;
+
+        const filteredTransactions = transactions.filter((t) => {
+          const searchTerm = query.toLowerCase();
+          if (!searchTerm) return true;
+          if (t.amount.toString().includes(searchTerm)) return true;
+          if (t.type.includes(searchTerm)) return true;
+
+          // --- FIX --- Search now correctly checks both old and new transaction formats.
+          if (t.type === "payment") {
+            const recipientName = t.recipient
+              ? t.recipient.name
+              : (contacts.find((c) => c.id == t.contactId) || {}).name;
+            return (
+              recipientName && recipientName.toLowerCase().includes(searchTerm)
+            );
+          }
+          return false;
+        });
+
+        if (filteredTransactions.length === 0) {
+          activityListContainer.innerHTML = `<div class="empty-state"><h2>${
+            query ? "No results found" : "Nothing Here!"
+          }</h2><p>${
+            query
+              ? "Try a different search term."
+              : "Your future activity will be organized here"
+          }</p></div>`;
+          return;
+        }
+
+        const groupedTransactions = filteredTransactions.reduce((groups, t) => {
+          const date = getRelativeDate(new Date(t.date));
+          if (!groups[date]) groups[date] = [];
+          groups[date].push(t);
+          return groups;
+        }, {});
+
+        let html = "";
+        for (const dateGroup in groupedTransactions) {
+          html += `<div class="date-group-header">${dateGroup}</div><ul class="transaction-list">`;
+          groupedTransactions[dateGroup].forEach((t) => {
+            let avatar,
+              name,
+              info,
+              amount,
+              amountClass = "";
+            const time = new Date(t.date).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            });
+            switch (t.type) {
+              case "payment":
+                // --- FIX --- This logic now handles BOTH old and new transaction formats.
+                let recipient;
+                if (t.recipient) {
+                  // New format (recipient object is embedded)
+                  recipient = t.recipient;
+                } else {
+                  // Old format (fallback to look up contactId)
+                  recipient = contacts.find((c) => c.id == t.contactId);
+                }
+
+                // If for some reason the recipient isn't found, skip this item to prevent errors.
+                if (!recipient) break;
+
+                const recipientNameRaw =
+                  recipient.name || recipient.cashtag || "Contact";
+                const recipientName = escapeHtml(recipientNameRaw);
+                const recipientInitial = getInitial(recipientNameRaw);
+                const recipientHasAvatar = Boolean(recipient.avatar);
+                const recipientIsTikTok =
+                  recipientHasAvatar && isTikTokProfile(recipient);
+                if (recipientHasAvatar) {
+                  avatar = `<div class="transaction-avatar${
+                    recipientIsTikTok ? " avatar-tiktok" : ""
+                  }" style="background-image:url('${escapeAttr(
+                    recipient.avatar
+                  )}');${
+                    recipientIsTikTok
+                      ? "background-position:center;background-size:cover;background-color:#000000;"
+                      : "background-position:center 21%;background-size:655%;"
+                  }"></div>`;
+                } else {
+                  avatar = `<div class="transaction-avatar" style="background-color:${escapeAttr(
+                    recipient.color || "#666666"
+                  )};">${recipientInitial}</div>`;
+                }
+                name = recipientName;
+                info =
+                  t.status === "success"
+                    ? `Payment sent • ${time}`
+                    : `Pending • ${time}`;
+                amount = formatSimpleCurrency(t.amount);
+                break;
+              case "add":
+                avatar = `<div class="transaction-avatar transaction-icon"><i class="fa-solid fa-plus"></i></div>`;
+                name = "Add money";
+                info = `Bank Account • ${time}`;
+                amount = formatCurrency(t.amount);
+                amountClass = "positive";
+                break;
+              case "withdraw":
+                avatar = `<div class="transaction-avatar transaction-icon" style="background-color: #6c757d;"><i class="fa-solid fa-building-columns"></i></div>`;
+                name = "Cash Out";
+                info = `Bank Account • ${time}`;
+                amount = formatCurrency(-t.amount);
+                break;
+            }
+            html += `<li class="transaction-item" data-id="${t.id}" data-type="${t.type}">${avatar}<div class="transaction-details"><span class="transaction-name">${name}</span><span class="transaction-info">${info}</span></div><div class="transaction-amount ${amountClass}">${amount}</div></li>`;
+          });
+          html += "</ul>";
+        }
+        activityListContainer.innerHTML = html;
+      }
+
+      function renderTransactionDetails(transactionId) {
+        const transactions =
+          JSON.parse(localStorage.getItem(transactionsKey)) || [];
+        const transaction = transactions.find((t) => t.id == transactionId);
+        if (!transaction || transaction.type !== "payment") return;
+
+        const contacts =
+          JSON.parse(localStorage.getItem(contactStorageKey)) ||
+          defaultContacts;
+        const userProfile =
+          JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
+
+        // --- FIX --- Logic to handle both old and new formats in the details view.
+        let recipient;
+        if (transaction.recipient) {
+          recipient = transaction.recipient;
+        } else {
+          recipient = contacts.find((c) => c.id == transaction.contactId);
+        }
+        if (!recipient) return;
+
+        const time = new Date(transaction.date).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+        const recipientNameRaw =
+          recipient.name || recipient.cashtag || "Contact";
+        const recipientName = escapeHtml(recipientNameRaw);
+        const recipientInitial = getInitial(recipientNameRaw);
+        const statusText =
+          transaction.status.charAt(0).toUpperCase() +
+          transaction.status.slice(1);
+        const statusDetail =
+          transaction.status === "success"
+            ? "Payment sent successfully"
+            : transaction.status === "pending"
+            ? "Payment on hold"
+            : "Received";
+        const recipientHasAvatar = Boolean(recipient.avatar);
+        const recipientIsTikTok =
+          recipientHasAvatar && isTikTokProfile(recipient);
+        const avatar = recipientHasAvatar
+          ? `<div class="transaction-avatar${
+              recipientIsTikTok ? " avatar-tiktok" : ""
+            }" style="background-image:url('${escapeAttr(
+              recipient.avatar
+            )}');${
+              recipientIsTikTok
+                ? "background-position:center;background-size:cover;background-color:#000000;"
+                : "background-position:center 21%;background-size:655%;"
+            }"></div>`
+          : `<div class="transaction-avatar" style="background-color:${escapeAttr(
+              recipient.color || "#666666"
+            )};">${recipientInitial}</div>`;
+        const senderName = escapeHtml(userProfile.fullName || "You");
+
+        // --- FIX --- Restored formatSimpleCurrency to show decimals in the details view for consistency.
+        detailsOverlay.innerHTML = `<header class="details-header"><button class="details-close-btn" id="details-close-btn">×</button></header><main class="details-content"><div class="details-hero">${avatar}<h1 class="transaction-name">${
+          recipientName
+        }</h1><p class="transaction-info">Today at ${time}</p><h2 class="details-amount">${formatCurrency(
+          transaction.amount,
+          false
+        )}</h2></div><ul class="details-list"><li class="details-item"><i class="details-icon fa-solid fa-check"></i><span class="details-label">${statusText}</span><span class="details-value">${statusDetail}</span></li><li class="details-item"><i class="details-icon fa-solid fa-user-group"></i><span class="details-label">Payment between</span><div class="details-value">To: ${
+          recipientName
+        }<br>From: ${
+          senderName
+        }</div></li><li class="details-item"><i class="details-icon fa-solid fa-dollar-sign"></i><span class="details-label">Payment Source</span><span class="details-value">Cash balance</span></li><li class="details-item"><i class="details-icon fa-solid fa-dollar-sign"></i><span class="details-label">Fees</span><span class="details-value">None applied <i class="fa-solid fa-circle-info"></i></span></li><li class="details-item"><i class="details-icon fa-solid fa-receipt"></i><span class="details-label">Transaction number</span><span class="details-value">${generateTransactionNumber()}</span></li></ul></main>`;
+        detailsOverlay.classList.add("show");
+        document
+          .getElementById("details-close-btn")
+          .addEventListener("click", () =>
+            detailsOverlay.classList.remove("show")
+          );
+      }
+
+      function showDeleteModal(id) {
+        transactionToDelete = id;
+        deleteModalOverlay.classList.add("show");
+      }
+      function hideDeleteModal() {
+        deleteModalOverlay.classList.remove("show");
+        transactionToDelete = null;
+      }
+      function deleteTransaction() {
+        if (!transactionToDelete) return;
+        let transactions =
+          JSON.parse(localStorage.getItem(transactionsKey)) || [];
+        transactions = transactions.filter((t) => t.id != transactionToDelete);
+        localStorage.setItem(transactionsKey, JSON.stringify(transactions));
+        const itemEl = document.querySelector(
+          `.transaction-item[data-id="${transactionToDelete}"]`
+        );
+        if (itemEl) {
+          itemEl.classList.add("deleting");
+          itemEl.addEventListener("transitionend", () =>
+            renderActivity(searchInput.value)
+          );
+        } else {
+          renderActivity(searchInput.value);
+        }
+        hideDeleteModal();
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const userProfile =
+          JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
+        if (userProfile.profilePic) {
+          profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com.png" alt="Profile" class="profile-icon">`;  // Fixed: Use local image
+        } else {
+          profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com.png" alt="Profile" class="profile-icon">`;
+        }
+        renderActivity();
+
+        searchInput.addEventListener("input", () =>
+          renderActivity(searchInput.value)
+        );
+
+        activityListContainer.addEventListener("pointerdown", (e) => {
+          const item = e.target.closest(".transaction-item");
+          if (!item) return;
+          e.preventDefault();
+          longPressTimer = setTimeout(() => {
+            showDeleteModal(item.dataset.id);
+          }, 500);
+        });
+
+        const clearLongPress = () => clearTimeout(longPressTimer);
+        activityListContainer.addEventListener("pointerup", clearLongPress);
+        activityListContainer.addEventListener("pointerleave", clearLongPress);
+        activityListContainer.addEventListener("pointermove", clearLongPress);
+
+        activityListContainer.addEventListener("click", (e) => {
+          clearTimeout(longPressTimer);
+          const item = e.target.closest(".transaction-item");
+          if (item && item.dataset.id && item.dataset.type === "payment") {
+            renderTransactionDetails(item.dataset.id);
+          }
+        });
+
+        deleteConfirmBtn.addEventListener("click", deleteTransaction);
+        deleteCancelBtn.addEventListener("click", hideDeleteModal);
+      });
+  </script>
+  <script src="footer.display.js">
+  </script>  <script src="loading-spinner.js">
+  </script> </body>
+</html>

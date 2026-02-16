@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:3001 https://*.render.com;" http-equiv="Content-Security-Policy"/>
+  <script>
+   (() => {
+        const KEY = "cashAppDarkMode";
+        try {
+          const on = localStorage.getItem(KEY) === "true";
+          if (on) {
+            const root = document.documentElement;
+            root.setAttribute("data-theme", "dark");
+            root.classList.add("dark-boot");
+            root.style.backgroundColor = "#000";
+          }
+        } catch (e) {
+          /* silent */
+        }
+      })();
+  </script>
+  <style id="theme-boot-inline">
+   /* Prevent initial white flash before CSS loads */
+      html.dark-boot,
+      html.dark-boot body {
+        background: #000000 !important;
+        color: #ffffff !important;
+      }
+      html.dark-boot {
+        --app-bg-color: #000000;
+        --card-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --button-bg: #1a1a1a;
+        --card-black: #333333;
+        --border-color-light: #333333;
+        --button-green: #555555;
+      }
+  </style>
+  <title>
+   Cash Card - Cash App
+  </title>
+  <!-- **NEW**: Ultra-Clean 'Inter' Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" referrerpolicy="no-referrer" rel="stylesheet"/>
+  <script src="guard.js">
+  </script>
+  <script src="dark-mode.js">
+  </script>
+  <script src="fix-images.js">
+  </script>
+  <style>
+   @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      :root {
+        --header-height: 65px;
+        --padding-screen: 18px;
+        --footer-height: 65px;
+        --app-bg-color: #f7f7f7;
+        --card-bg-color: #ffffff;
+        --text-primary: #000000;
+        --text-secondary: #6c757d;
+        --button-bg: #e9ecef;
+        --border-radius-card: 16px;
+        --border-color-light: #e9ecef;
+        --accent-green: #00d54b;
+        --button-green: #00d54b;
+        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        --card-black: #1a1a1a;
+      }
+      body.dark-mode {
+        --app-bg-color: #000000;
+        --card-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --button-bg: #1a1a1a;
+        --card-black: #333333;
+        --border-color-light: #333333;
+        --button-green: #555555;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--font-family);
+        background-color: var(--app-bg-color);
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .app-container {
+        max-width: 450px;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background-color: var(--app-bg-color);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      /* **FIXED** Header */
+      .app-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px var(--padding-screen);
+        height: var(--header-height);
+        flex-shrink: 0;
+      }
+      .app-header h1 {
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .profile-icon-link {
+        display: block;
+        width: 36px;
+        height: 36px;
+      }
+      .profile-icon {
+        font-size: 16px;
+        color: var(--text-secondary);
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        object-fit: cover;
+      }
+
+      .main-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px var(--padding-screen) 150px;
+        scrollbar-width: none;
+      }
+      .main-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* **FIXED** Ultra-Realistic Cash Card */
+      .cash-card {
+        background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+        color: #f5f5f5;
+        border-radius: var(--border-radius-card);
+        padding: 20px;
+        aspect-ratio: 1.586 / 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-family: "SF Mono", "Courier New", Courier, monospace;
+        position: relative;
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .card-chip {
+        position: absolute;
+        top: 35px;
+        left: 20px;
+        width: 40px;
+        height: 30px;
+        background: linear-gradient(135deg, #d4af37, #b08d2d);
+        border-radius: 4px;
+      }
+      .card-chip::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        width: 80%;
+        height: 1px;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .card-header {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .card-options {
+        letter-spacing: 4px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      .card-number {
+        display: flex;
+        justify-content: space-between;
+        font-size: clamp(16px, 5vw, 22px);
+        letter-spacing: 2px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        margin-top: auto;
+      }
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 20px;
+      }
+      .card-holder-name {
+        font-size: clamp(12px, 3.5vw, 14px);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      .visa-logo img {
+        width: clamp(50px, 15vw, 60px);
+        height: auto;
+      }
+
+      .order-section {
+        background-color: var(--card-bg-color);
+        border-radius: var(--border-radius-card);
+        padding: 16px;
+        margin-top: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .order-details .title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .order-details .subtitle {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+      .order-button {
+        background-color: var(--button-green);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* **FIXED** Boost Section with Font Awesome */
+      .boost-section {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        min-height: 150px;
+      }
+      .boost-container {
+        position: relative;
+      }
+      .boost-item {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        transform: translate(-50%, -50%);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .boost-item i {
+        font-size: 24px;
+      }
+      .boost-item.b1 {
+        background-color: #ff3a30;
+      } /* DoorDash Red */
+      .boost-item.b2 {
+        background-color: #007aff;
+      } /* Coffee Blue */
+      .boost-item.b3 {
+        background-color: #1a1a1a;
+      } /* Nike Black */
+      .boost-item.b4 {
+        background-color: #af52de;
+      } /* Shopping Purple */
+      .boost-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #ff2d55;
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 6px;
+        border-radius: 10px;
+        border: 2px solid white;
+      }
+      .boost-badge.blue {
+        background-color: #007aff;
+      }
+      .boost-toggle-btn {
+        position: relative;
+        z-index: 10;
+        background-color: var(--button-green);
+        color: white;
+        border: none;
+        border-radius: 28px;
+        padding: 14px 32px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 24px;
+      }
+      .boosts-active .b1 {
+        transform: translate(-50%, -50%) translate(-65px, -8px);
+      }
+      .boosts-active .b2 {
+        transform: translate(-50%, -50%) translate(65px, -8px);
+      }
+      .boosts-active .b3 {
+        transform: translate(-50%, -50%) translateY(-80px);
+      }
+      .boosts-active .b4 {
+        transform: translate(-50%, -50%) translateY(-80px) translateX(110px);
+      }
+
+      .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid var(--border-color-light);
+        background-color: var(--card-bg-color);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 65px;
+        padding: 0 var(--padding-screen);
+        z-index: 200;
+      }
+      .nav-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+        font-weight: 600;
+        color: #8c8c8c;
+        min-width: 44px;
+      }
+      .nav-button svg {
+        fill: #8c8c8c;
+      }
+      .nav-button.disabled,
+      .nav-button:disabled {
+        cursor: default;
+        opacity: 0.45;
+        pointer-events: none;
+      }
+      .nav-button.disabled svg,
+      .nav-button:disabled svg {
+        fill: rgba(140, 140, 140, 0.5);
+      }
+      .nav-button.active svg {
+        fill: var(--text-primary);
+      }
+      #nav-balance-display.active,
+      .nav-button.active svg {
+        color: var(--text-primary);
+      }
+      #nav-balance-display {
+        font-size: 16px;
+      }
+  </style>
+ </head>
+ <body>
+  <div class="app-container">
+   <meta content="#0f8038" name="theme-color">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="Cash Mode" name="apple-mobile-web-app-title"/>
+    <link href="site.webmanifest" rel="manifest"/>
+    <link href="Cash_App-Logo.wine.png" rel="icon" sizes="192x192" type="image/png"/>
+    <link href="Cash_App-Logo.wine.png" rel="apple-touch-icon"/>
+    <link href="loading-spinner.css" rel="stylesheet"/>
+    <header class="app-header">
+     <h1>
+      Cash Card
+     </h1>
+     <a class="profile-icon-link" href="profile.html">
+     </a>
+    </header>
+    <main class="main-content">
+     <div class="cash-card">
+      <div class="card-chip">
+      </div>
+      <div class="card-header">
+       <span class="card-options">
+        •••
+       </span>
+      </div>
+      <div class="card-number">
+       <span>
+        XXXX
+       </span>
+       <span>
+        XXXX
+       </span>
+       <span>
+        XXXX
+       </span>
+       <span>
+        3757
+       </span>
+      </div>
+      <div class="card-footer">
+       <span class="card-holder-name" id="card-holder-name">
+       </span>
+       <div class="visa-logo">
+        <img alt="" src="Visa-logo-white.png"/>
+       </div>
+      </div>
+     </div>
+     <div class="order-section">
+      <div class="order-details">
+       <span class="title">
+        Virtual Card Only
+       </span>
+       <span class="subtitle">
+        Free Cash Card Available
+       </span>
+      </div>
+      <button class="order-button">
+       Order
+      </button>
+     </div>
+     <div class="boost-section" id="boost-section">
+      <div class="boost-container">
+       <div class="boost-item b1">
+        <div class="boost-badge">
+         10%
+        </div>
+        <i class="fa-solid fa-utensils">
+        </i>
+       </div>
+       <div class="boost-item b2">
+        <div class="boost-badge blue">
+         $1
+        </div>
+        <i class="fa-solid fa-mug-saucer">
+        </i>
+       </div>
+       <div class="boost-item b3">
+        <i class="fa-solid fa-check">
+        </i>
+       </div>
+       <div class="boost-item b4">
+        <i class="fa-solid fa-cart-shopping">
+        </i>
+       </div>
+      </div>
+      <button class="boost-toggle-btn" id="boost-toggle-btn">
+       Save With Boost
+      </button>
+     </div>
+    </main>
+    <nav class="bottom-nav">
+     <a href="home.html">
+      <button aria-label="Home" class="nav-button" id="nav-balance-display">
+      </button>
+     </a>
+     <!-- ... other nav buttons ... -->
+     <a href="#">
+      <button aria-label="Cards" class="nav-button active">
+       <svg height="18" viewbox="0 0 24 21" width="22">
+        <path clip-rule="evenodd" d="M131.25 21H145.25C146.355 21 147.25 21.8954 147.25 23V33C147.25 34.1046 146.355 35 145.25 35H131.25C130.145 35 129.25 34.1046 129.25 33V23C129.25 21.8954 130.145 21 131.25 21ZM126.25 23C126.25 20.2386 128.489 18 131.25 18H145.25C148.011 18 150.25 20.2386 150.25 23V33C150.25 35.7614 148.011 38 145.25 38H131.25C128.489 38 126.25 35.7614 126.25 33V23ZM134.25 24C133.145 24 132.25 24.8954 132.25 26C132.25 27.1046 133.145 28 134.25 28H135.25C136.355 28 137.25 27.1046 137.25 26C137.25 24.8954 136.355 24 135.25 24H134.25Z" fill-rule="evenodd" transform="translate(-126.25 -18)">
+        </path>
+       </svg>
+      </button>
+     </a>
+     <a href="pay.html">
+      <button aria-label="Pay" class="nav-button">
+       <svg height="20" viewbox="0 0 15 23" width="14">
+        <path d="M217.675 23.8903C217.923 24.1401 218.336 24.1401 218.569 23.8903L219.811 22.5912C220.075 22.3414 220.06 21.8917 219.782 21.6218C218.805 20.7669 217.671 20.1148 216.442 19.7032L216.835 17.8045C216.919 17.3897 216.611 17 216.199 17H213.794C213.643 17.0016 213.498 17.0551 213.382 17.1515C213.267 17.2479 213.187 17.3814 213.158 17.5296L212.81 19.2185C209.61 19.3834 206.897 21.0173 206.897 24.365C206.897 27.263 209.138 28.5071 211.508 29.3616C213.749 30.221 214.937 30.5408 214.937 31.7499C214.937 32.9941 213.754 33.7236 212.005 33.7236C210.415 33.7236 208.745 33.189 207.453 31.8848C207.393 31.8244 207.322 31.7765 207.243 31.7438C207.165 31.7111 207.081 31.6942 206.996 31.6942C206.911 31.6942 206.827 31.7111 206.748 31.7438C206.67 31.7765 206.599 31.8244 206.539 31.8848L205.197 33.2339C205.071 33.3613 205 33.5338 205 33.7136C205 33.8934 205.071 34.0659 205.197 34.1933C206.241 35.2276 207.562 35.9771 209.069 36.3918L208.701 38.1756C208.617 38.5903 208.92 38.975 209.332 38.98L211.743 39C211.895 39.0007 212.042 38.9482 212.16 38.8516C212.278 38.755 212.359 38.6202 212.388 38.4704L212.736 36.7765C216.586 36.5167 218.932 34.3831 218.932 31.2703C218.932 28.4022 216.596 27.193 213.764 26.2087C212.144 25.6041 210.743 25.1894 210.743 23.9453C210.743 22.7361 212.05 22.2564 213.361 22.2564C215.031 22.2564 216.636 22.9509 217.685 23.9003L217.675 23.8903Z" transform="translate(-205 -17)">
+        </path>
+       </svg>
+      </button>
+     </a>
+     <button aria-disabled="true" aria-label="Search" class="nav-button disabled" type="button">
+      <svg height="21" viewbox="0 0 23 24" width="21">
+       <path clip-rule="evenodd" d="M291.75 26.5C291.75 30.0899 288.84 33 285.25 33C281.66 33 278.75 30.0899 278.75 26.5C278.75 22.9101 281.66 20 285.25 20C288.84 20 291.75 22.9101 291.75 26.5ZM290.823 34.1944C289.258 35.3302 287.332 36 285.25 36C280.003 36 275.75 31.7467 275.75 26.5C275.75 21.2533 280.003 17 285.25 17C290.497 17 294.75 21.2533 294.75 26.5C294.75 28.582 294.08 30.5076 292.944 32.0731L297.882 37.0104C298.468 37.5962 298.468 38.546 297.882 39.1317C297.296 39.7175 296.346 39.7175 295.76 39.1317L290.823 34.1944Z" fill-rule="evenodd" transform="translate(-276.25 -16.5)">
+       </path>
+      </svg>
+     </button>
+     <a href="activty.html">
+      <button aria-label="Activity" class="nav-button">
+       <svg height="22" viewbox="0 0 24 25" width="22">
+        <path clip-rule="evenodd" d="M370 28C370 32.9706 365.971 37 361 37C356.029 37 352 32.9706 352 28C352 23.0294 356.029 19 361 19C365.971 19 370 23.0294 370 28ZM373 28C373 34.6274 367.627 40 361 40C354.373 40 349 34.6274 349 28C349 21.3726 354.373 16 361 16C367.627 16 373 21.3726 373 28ZM362.5 24C362.5 23.1716 361.828 22.5 361 22.5C360.172 22.5 359.5 23.1716 359.5 24V27.4893C359.5 28.4591 360.061 29.3414 360.939 29.753L364.363 31.3582C365.113 31.7098 366.007 31.3868 366.358 30.6367C366.71 29.8865 366.387 28.9934 365.637 28.6418L362.5 27.1715V24Z" fill-rule="evenodd" transform="translate(-349 -16)">
+        </path>
+       </svg>
+      </button>
+     </a>
+    </nav>
+   </meta>
+  </div>
+  <script>
+   const userProfileKey = "cashAppUserProfile";
+      const defaultProfile = { fullName: "Jane Doe", profilePic: "" };
+
+      function loadUserData() {
+        const savedProfile = localStorage.getItem(userProfileKey);
+        const userProfile = savedProfile
+          ? JSON.parse(savedProfile)
+          : defaultProfile;
+
+        document.getElementById("card-holder-name").textContent =
+          userProfile.fullName;
+
+        const profileIconLink = document.querySelector(".profile-icon-link");
+        if (userProfile.profilePic) {
+          profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com.png" alt="Profile" class="profile-icon">`;  // Fixed: Use local image
+        } else {
+          profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com.png" alt="Profile" class="profile-icon">`;
+        }
+      }
+
+      const boostToggleBtn = document.getElementById("boost-toggle-btn");
+      const boostSection = document.getElementById("boost-section");
+
+      boostToggleBtn.addEventListener("click", () => {
+        boostSection.classList.toggle("boosts-active");
+      });
+
+      document.addEventListener("DOMContentLoaded", loadUserData);
+  </script>
+  <script src="footer.display.js">
+  </script>  <script src="loading-spinner.js">
+  </script> </body>
+</html>

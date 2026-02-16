@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta content="#0f8038" name="theme-color"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="Cash Mode" name="apple-mobile-web-app-title"/>
+  <link href="site.webmanifest" rel="manifest"/>
+  <link href="Cash_App-Logo.wine.png" rel="icon" sizes="192x192" type="image/png"/>
+  <link href="Cash_App-Logo.wine.png" rel="apple-touch-icon"/>
+  <link href="loading-spinner.css" rel="stylesheet"/>
+  <title>
+   Profile - Cash App
+  </title>
+  <!-- Favicon -->
+  <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" referrerpolicy="no-referrer" rel="stylesheet"/>
+  <script src="guard.js">
+  </script>
+  <script src="dark-mode.js">
+  </script>
+  <script src="fix-images.js">
+  </script>
+  <style>
+   @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      :root {
+        --padding-screen: 20px;
+        --app-bg-color: #ffffff;
+        --card-bg-color: #ffffff;
+        --text-primary: #000000;
+        --text-secondary: #6c757d;
+        --accent-green: #00d54b;
+        --button-green: #00d54b;
+        --border-color-light: #e9ecef;
+        --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+      }
+      body.dark-mode {
+        --app-bg-color: #000000;
+        --card-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color-light: #333333;
+        --button-green: #555555;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--font-family);
+        background-color: var(--app-bg-color);
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      body.modal-open {
+        overflow: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .faceid-selection-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .faceid-selection-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .faceid-selection-content {
+        background: var(--card-bg-color);
+        border-radius: 20px;
+        padding: 30px 20px;
+        max-width: 320px;
+        width: 90%;
+        text-align: center;
+      }
+      .faceid-selection-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+      }
+      .faceid-selection-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 30px;
+      }
+      .faceid-option {
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .faceid-option:hover {
+        background: #e9ecef;
+        border-color: #00d54b;
+      }
+      .faceid-option:active {
+        transform: scale(0.98);
+      }
+      .faceid-option-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+      .faceid-option-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 5px;
+      }
+      .faceid-option-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .faceid-cancel-btn {
+        background: transparent;
+        border: none;
+        color: #666;
+        font-size: 16px;
+        padding: 15px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .faceid-register-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(252, 251, 252, 0.98);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .faceid-register-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .faceid-register-content {
+        text-align: center;
+      }
+      .faceid-register-video-wrapper {
+        width: 220px;
+        height: 220px;
+        border-radius: 32px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.05);
+        margin: 0 auto 24px;
+      }
+      .faceid-register-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 32px;
+      }
+      .faceid-register-text {
+        color: var(--text-primary);
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .profile-app-container {
+        max-width: 450px;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background-color: var(--app-bg-color);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--padding-screen);
+        flex-shrink: 0;
+      }
+      .header-icon {
+        font-size: 24px;
+        color: var(--text-primary);
+      }
+
+      /* --- **FIXED** Scrollable Content Area --- */
+      .profile-main-content {
+        padding: 0 var(--padding-screen);
+        text-align: center;
+        flex-grow: 1; /* Allows this area to take up remaining space */
+        overflow-y: auto; /* Enables vertical scrolling if content overflows */
+        padding-bottom: 40px; /* Adds space at the bottom of the scroll */
+      }
+      .profile-main-content::-webkit-scrollbar {
+        display: none;
+      } /* Hide scrollbar for aesthetics */
+      .profile-main-content {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .profile-pic-wrapper {
+        margin: 20px auto 16px;
+        width: 100px;
+        height: 100px;
+        padding: 5px;
+        border-radius: 50%;
+        border: 2px dashed var(--accent-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .profile-pic {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: var(--border-color-light);
+      }
+      .profile-name {
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .profile-cashtag {
+        font-size: 18px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        margin-bottom: 24px;
+      }
+      .invite-btn {
+        width: 100%;
+        padding: 16px;
+        background-color: var(--button-green);
+        color: white;
+        border: none;
+        border-radius: 28px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 30px;
+      }
+
+      .settings-list {
+        list-style: none;
+        text-align: left;
+      }
+      .settings-item {
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .settings-item:last-child {
+        border-bottom: none;
+      }
+
+      .settings-item a {
+        display: flex;
+        align-items: center;
+        padding: 18px 0;
+      }
+      .settings-icon {
+        font-size: 18px;
+        width: 30px;
+        text-align: center;
+        margin-right: 16px;
+        color: var(--text-primary);
+      }
+      .settings-label {
+        font-size: 16px;
+        font-weight: 500;
+        flex-grow: 1;
+      }
+      .notification-dot {
+        width: 8px;
+        height: 8px;
+        background-color: red;
+        border-radius: 50%;
+        margin-right: 12px;
+      }
+
+      .settings-chevron-svg {
+        width: 9px;
+        height: 15px;
+      }
+
+      /* Toggle Setting Item */
+      .toggle-setting-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .toggle-setting-left {
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
+      .toggle-setting-label {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .toggle-setting-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 51px;
+        height: 31px;
+        flex-shrink: 0;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e5e5ea;
+        transition: 0.3s;
+        border-radius: 31px;
+      }
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 27px;
+        width: 27px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+      input:checked + .toggle-slider {
+        background-color: var(--button-green);
+      }
+      input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+      .faceid-status-message {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        text-align: center;
+        display: none;
+      }
+      .faceid-status-message.show {
+        display: block;
+      }
+      .faceid-status-message.success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .faceid-status-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .faceid-status-message.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+
+      /* Personal Edit Overlay */
+      .personal-edit-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--card-bg-color);
+        z-index: 4000;
+        transform: translateX(100%);
+        transition: transform 0.35s ease-in-out;
+      }
+      .personal-edit-overlay.show {
+        transform: translateX(0);
+      }
+      .edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--padding-screen);
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .edit-back-btn {
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .edit-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .edit-done-btn {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--accent-green);
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .edit-done-btn:disabled {
+        color: #a0e6bb;
+      }
+      .edit-content {
+        padding: 24px var(--padding-screen);
+      }
+      .edit-profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: var(--border-color-light);
+        display: block;
+        margin: 0 auto 24px;
+        cursor: pointer;
+      }
+      #edit-pic-input {
+        display: none;
+      }
+      .input-group {
+        margin-bottom: 20px;
+      }
+      .input-group label {
+        display: block;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border-color-light);
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+      }
+  </style>
+ </head>
+ <body>
+  <div class="profile-app-container">
+   <header class="profile-header">
+    <i class="fa-solid fa-qrcode header-icon">
+    </i>
+    <a href="home.html">
+     <i class="fa-solid fa-xmark header-icon">
+     </i>
+    </a>
+   </header>
+   <main class="profile-main-content">
+    <div class="profile-pic-wrapper">
+     <img alt="Profile Picture" class="profile-pic" id="main-profile-pic" src=""/>
+    </div>
+    <h2 class="profile-name" id="main-profile-name">
+    </h2>
+    <p class="profile-cashtag" id="main-cashtag">
+    </p>
+    <button class="invite-btn">
+     Invite Friends, Get $15
+    </button>
+    <ul class="settings-list">
+     <li class="settings-item">
+      <a href="#" id="personal-btn">
+       <i class="settings-icon fa-solid fa-user">
+       </i>
+       <span class="settings-label">
+        Personal
+       </span>
+       <span class="notification-dot">
+       </span>
+       <svg class="settings-chevron-svg" fill="none" viewbox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L1 14" stroke="#C7C7CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+        </path>
+       </svg>
+      </a>
+     </li>
+     <li class="settings-item">
+      <a href="#" id="privacy-security-btn">
+       <i class="settings-icon fa-solid fa-shield-halved">
+       </i>
+       <span class="settings-label">
+        Privacy &amp; Security
+       </span>
+       <svg class="settings-chevron-svg" fill="none" viewbox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L1 14" stroke="#C7C7CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+        </path>
+       </svg>
+      </a>
+     </li>
+     <li class="settings-item">
+      <a href="#">
+       <i class="settings-icon fa-solid fa-bell">
+       </i>
+       <span class="settings-label">
+        Notifications
+       </span>
+       <svg class="settings-chevron-svg" fill="none" viewbox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L1 14" stroke="#C7C7CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+        </path>
+       </svg>
+      </a>
+     </li>
+     <li class="settings-item">
+      <a href="#">
+       <i class="settings-icon fa-solid fa-file-lines">
+       </i>
+       <span class="settings-label">
+        Documents
+       </span>
+       <svg class="settings-chevron-svg" fill="none" viewbox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L1 14" stroke="#C7C7CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+        </path>
+       </svg>
+      </a>
+     </li>
+     <li class="settings-item">
+      <a href="support.html">
+       <i class="settings-icon fa-solid fa-circle-question">
+       </i>
+       <span class="settings-label">
+        Support
+       </span>
+       <svg class="settings-chevron-svg" fill="none" viewbox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L1 14" stroke="#C7C7CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+        </path>
+       </svg>
+      </a>
+     </li>
+     <li class="settings-item">
+      <a href="#" id="logout-btn">
+       <i class="settings-icon fa-solid fa-right-from-bracket">
+       </i>
+       <span class="settings-label">
+        Logout
+       </span>
+       <svg class="settings-chevron-svg" fill="none" viewbox="0 0 9 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L7.5 7.5L1 14" stroke="#C7C7CC" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+        </path>
+       </svg>
+      </a>
+     </li>
+    </ul>
+   </main>
+  </div>
+  <!-- Personal Edit Overlay -->
+  <div class="personal-edit-overlay" id="personal-edit-overlay">
+   <header class="edit-header">
+    <button class="edit-back-btn" id="edit-back-btn">
+     <i class="fa-solid fa-chevron-left">
+     </i>
+    </button>
+    <h2 class="edit-title">
+     Personal
+    </h2>
+    <button class="edit-done-btn" disabled="" id="edit-done-btn">
+     Done
+    </button>
+   </header>
+   <main class="edit-content">
+    <img alt="Edit Profile Picture" class="edit-profile-pic" id="edit-profile-pic" src="https://wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwvvww.onrender.com/images/pi2_camera_button_disabled.png"/>
+    <input accept="image/*" id="edit-pic-input" type="file"/>
+    <div class="input-group">
+     <label for="edit-full-name">
+      Full Name
+     </label>
+     <input id="edit-full-name" type="text"/>
+    </div>
+    <div class="input-group">
+     <label for="edit-cashtag">
+      Cashtag
+     </label>
+     <input id="edit-cashtag" type="text"/>
+    </div>
+    <div class="input-group">
+     <label for="edit-account-number">
+      Account Number
+     </label>
+     <input id="edit-account-number" type="text"/>
+    </div>
+    <div class="input-group">
+     <label for="edit-routing-number">
+      Routing Number
+     </label>
+     <input id="edit-routing-number" type="text"/>
+    </div>
+   </main>
+  </div>
+  <!-- Privacy & Security Modal -->
+  <div class="personal-edit-overlay" id="privacy-security-overlay">
+   <div class="edit-header">
+    <button class="edit-back-btn" id="privacy-back-btn">
+     <i class="fa-solid fa-chevron-left">
+     </i>
+    </button>
+    <h2>
+     Privacy &amp; Security
+    </h2>
+    <div style="width: 24px;">
+    </div>
+   </div>
+   <main class="edit-content">
+    <div class="toggle-setting-item">
+     <div class="toggle-setting-left">
+      <i class="fa-solid fa-face-smile" style="font-size: 20px; margin-right: 12px;">
+      </i>
+      <div>
+       <div class="toggle-setting-label">
+        Face ID Payment
+       </div>
+       <div class="toggle-setting-desc">
+        Verify with Face ID before payments
+       </div>
+      </div>
+     </div>
+     <label class="toggle-switch">
+      <input id="faceIdToggle" type="checkbox"/>
+      <span class="toggle-slider">
+      </span>
+     </label>
+    </div>
+    <div class="faceid-status-message" id="faceIdStatus">
+    </div>
+   </main>
+  </div>
+  <!-- Face ID Selection Modal -->
+  <div class="faceid-selection-modal" id="faceIdSelectionModal">
+   <div class="faceid-selection-content">
+    <h2 class="faceid-selection-title">
+     Choose Face ID Style
+    </h2>
+    <p class="faceid-selection-subtitle">
+     Select your preferred Face ID animation
+    </p>
+    <div class="faceid-option" data-type="iphone13">
+     <div class="faceid-option-icon">
+      📱
+     </div>
+     <div class="faceid-option-name">
+      Face ID 13
+     </div>
+     <div class="faceid-option-desc">
+      Classic centered animation
+     </div>
+    </div>
+    <div class="faceid-option" data-type="iphone17">
+     <div class="faceid-option-icon">
+      🔒
+     </div>
+     <div class="faceid-option-name">
+      Face ID iPhone 17
+     </div>
+     <div class="faceid-option-desc">
+      Dynamic Island capsule style
+     </div>
+    </div>
+    <button class="faceid-cancel-btn" id="faceIdSelectionCancel">
+     Cancel
+    </button>
+   </div>
+  </div>
+  <!-- Face ID Registration Modal -->
+  <div class="faceid-register-modal" id="faceIdRegisterModal">
+   <div class="faceid-register-content">
+    <div class="faceid-register-video-wrapper">
+     <video class="faceid-register-video" id="faceIdRegisterVideo" loop="" muted="" playsinline="" src="icons/faceIDvideo.mp4">
+     </video>
+    </div>
+    <p class="faceid-register-text">
+     Setting up Face ID...
+    </p>
+   </div>
+  </div>
+  <script>
+   const userProfileKey = "cashAppUserProfile";
+      const defaultProfile = {
+        fullName: "Jane Doe",
+        cashtag: "waldoapp",
+        accountNumber: "****3186",
+        routingNumber: "****715",
+        profilePic: "",
+      };
+      let userProfile = {};
+
+      // DOM Elements
+      const mainProfilePic = document.getElementById("main-profile-pic");
+      const mainProfileName = document.getElementById("main-profile-name");
+      const mainCashtag = document.getElementById("main-cashtag");
+      const personalBtn = document.getElementById("personal-btn");
+      const personalEditOverlay = document.getElementById(
+        "personal-edit-overlay"
+      );
+      const editBackBtn = document.getElementById("edit-back-btn");
+      const editDoneBtn = document.getElementById("edit-done-btn");
+      const editProfilePic = document.getElementById("edit-profile-pic");
+      const editPicInput = document.getElementById("edit-pic-input");
+      const editFullName = document.getElementById("edit-full-name");
+      const editCashtag = document.getElementById("edit-cashtag");
+      const editAccountNumber = document.getElementById("edit-account-number");
+      const editRoutingNumber = document.getElementById("edit-routing-number");
+
+      function saveProfile() {
+        localStorage.setItem(userProfileKey, JSON.stringify(userProfile));
+      }
+
+      function loadProfile() {
+        const savedProfile = localStorage.getItem(userProfileKey);
+        userProfile = savedProfile
+          ? JSON.parse(savedProfile)
+          : { ...defaultProfile };
+        userProfile = { ...defaultProfile, ...userProfile };
+        updateMainUI();
+      }
+
+      function updateMainUI() {
+        mainProfileName.textContent = userProfile.fullName;
+        mainCashtag.textContent = `$${userProfile.cashtag}`;
+        if (userProfile.profilePic) {
+          mainProfilePic.src = userProfile.profilePic;
+        } else {
+          mainProfilePic.src = "images/pi2_camera_button_disabled.png"; // Transparent pixel
+        }
+      }
+
+      function openEditOverlay() {
+        editFullName.value = userProfile.fullName;
+        editCashtag.value = userProfile.cashtag;
+        editAccountNumber.value = userProfile.accountNumber;
+        editRoutingNumber.value = userProfile.routingNumber;
+        editProfilePic.src =
+          userProfile.profilePic || "images/pi2_camera_button_disabled.png";
+
+        editDoneBtn.disabled = true;
+        personalEditOverlay.classList.add("show");
+        document.body.classList.add("modal-open");
+      }
+
+      function closeEditOverlay() {
+        personalEditOverlay.classList.remove("show");
+        document.body.classList.remove("modal-open");
+      }
+
+      function handleSaveChanges() {
+        userProfile.fullName = editFullName.value;
+        userProfile.cashtag = editCashtag.value;
+        userProfile.accountNumber = editAccountNumber.value;
+        userProfile.routingNumber = editRoutingNumber.value;
+
+        saveProfile();
+        updateMainUI();
+        closeEditOverlay();
+      }
+
+      // Event Listeners
+      personalBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openEditOverlay();
+      });
+      editBackBtn.addEventListener("click", closeEditOverlay);
+      editDoneBtn.addEventListener("click", handleSaveChanges);
+
+      [editFullName, editCashtag, editAccountNumber, editRoutingNumber].forEach(
+        (input) => {
+          input.addEventListener("input", () => {
+            editDoneBtn.disabled = false;
+          });
+        }
+      );
+
+      editProfilePic.addEventListener("click", () => {
+        editPicInput.click();
+      });
+      editPicInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const newPicSrc = e.target.result;
+          editProfilePic.src = newPicSrc;
+          userProfile.profilePic = newPicSrc;
+          editDoneBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Logout functionality
+      const logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          
+          // Call logout API
+          try {
+            await fetch('/api/auth/logout', {
+              method: 'POST',
+              credentials: 'include'
+            });
+          } catch (error) {
+            console.warn('Logout API call failed:', error);
+          }
+          
+          // Clear session storage and localStorage
+          sessionStorage.clear();
+          localStorage.removeItem('deviceId');
+          
+          // Force redirect to login page
+          window.location.replace('/pay.html');
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", loadProfile);
+
+      // Privacy & Security Modal
+      const privacySecurityBtn = document.getElementById('privacy-security-btn');
+      const privacySecurityOverlay = document.getElementById('privacy-security-overlay');
+      const privacyBackBtn = document.getElementById('privacy-back-btn');
+      const faceIdToggle = document.getElementById('faceIdToggle');
+      const faceIdStatus = document.getElementById('faceIdStatus');
+
+      const FACEID_ENABLED_KEY = 'cashAppFaceIdEnabled';
+      const FACEID_CREDENTIAL_KEY = 'cashAppFaceIdCredential';
+
+      // Load Face ID toggle state
+      function loadFaceIdState() {
+        const enabled = localStorage.getItem(FACEID_ENABLED_KEY) === 'true';
+        if (faceIdToggle) faceIdToggle.checked = enabled;
+      }
+
+      // Check if Web Authentication API is available
+      function isFaceIdAvailable() {
+        return window.PublicKeyCredential !== undefined;
+      }
+
+      // Show status message
+      function showFaceIdStatus(message, type) {
+        faceIdStatus.textContent = message;
+        faceIdStatus.className = 'faceid-status-message show ' + type;
+        setTimeout(() => {
+          faceIdStatus.classList.remove('show');
+        }, 4000);
+      }
+
+      // Register Face ID credential (simulated)
+      async function registerFaceId() {
+        // Simulated Face ID setup - no real biometric authentication
+        localStorage.setItem(FACEID_CREDENTIAL_KEY, 'simulated-' + Date.now());
+        localStorage.setItem(FACEID_ENABLED_KEY, 'true');
+        showFaceIdStatus('✓ Face ID enabled! Payments will show Face ID animation.', 'success');
+        return true;
+      }
+
+      // Face ID selection modal
+      const selectionModal = document.getElementById('faceIdSelectionModal');
+      const selectionCancelBtn = document.getElementById('faceIdSelectionCancel');
+      const faceIdOptions = document.querySelectorAll('.faceid-option');
+
+      faceIdOptions.forEach(option => {
+        option.addEventListener('click', async () => {
+          const faceIdType = option.getAttribute('data-type');
+          localStorage.setItem('cashAppFaceIdType', faceIdType);
+          
+          selectionModal.classList.remove('show');
+          
+          const success = await registerFaceId();
+          if (!success) {
+            faceIdToggle.checked = false;
+          }
+        });
+      });
+
+      selectionCancelBtn.addEventListener('click', () => {
+        selectionModal.classList.remove('show');
+        faceIdToggle.checked = false;
+      });
+
+      // Toggle Face ID
+      if (faceIdToggle) {
+        faceIdToggle.addEventListener('change', async (e) => {
+          if (e.target.checked) {
+            // Show selection modal
+            selectionModal.classList.add('show');
+          } else {
+            // Disable Face ID
+            localStorage.setItem(FACEID_ENABLED_KEY, 'false');
+            localStorage.removeItem(FACEID_CREDENTIAL_KEY);
+            localStorage.removeItem('cashAppFaceIdType');
+            showFaceIdStatus('Face ID disabled for payments', 'info');
+          }
+        });
+      }
+
+      // Privacy & Security modal handlers
+      if (privacySecurityBtn) {
+        privacySecurityBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadFaceIdState();
+          privacySecurityOverlay.classList.add('show');
+        });
+      }
+
+      if (privacyBackBtn) {
+        privacyBackBtn.addEventListener('click', () => {
+          privacySecurityOverlay.classList.remove('show');
+        });
+      }
+
+      loadFaceIdState();
+  </script>
+  <script src="loading-spinner.js">
+  </script>
+ </body>
+</html>

@@ -1,0 +1,125 @@
+/* Animated Loading Spinner */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.dark-mode .loading-overlay {
+  background-color: rgba(0, 0, 0, 0.95);
+}
+
+/* Spinner Container */
+.loading-spinner {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Rotating Circle Spinner */
+.spinner-circle {
+  width: 100%;
+  height: 100%;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #00d54b;
+  border-right: 4px solid #00d54b;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 213, 75, 0.3);
+}
+
+body.dark-mode .spinner-circle {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid #00d54b;
+  border-right: 4px solid #00d54b;
+}
+
+/* Spinner rotation animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulse effect for glow */
+.spinner-circle::before {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 2px solid rgba(0, 213, 75, 0.2);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  top: -2px;
+  left: -2px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Loading text */
+.loading-text {
+  position: absolute;
+  bottom: -60px;
+  font-size: 14px;
+  color: #00d54b;
+  font-weight: 600;
+  letter-spacing: 2px;
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-text {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Smooth fade out animation */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.loading-overlay.fade-out {
+  animation: fadeOut 0.5s ease-in-out forwards;
+}

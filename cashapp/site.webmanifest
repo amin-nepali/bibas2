@@ -1,0 +1,21 @@
+{
+  "name": "Cash Mode",
+  "short_name": "Cash",
+  "start_url": "/pay.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f8038",
+  "theme_color": "#0f8038",
+  "icons": [
+    {
+      "src": "icons/Cash_App-Logo.wine.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Cash_App-Logo.wine.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
